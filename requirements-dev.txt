@@ -1,0 +1,8 @@
+# claw-cog Development Dependencies
+
+pytest>=7.0.0
+pytest-benchmark
+pytest-cov>=3.0.0
+mypy>=0.950
+black>=22.0.0
+flake8>=4.0.0

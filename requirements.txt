@@ -1,0 +1,4 @@
+# claw-cog Dependencies
+
+claw-mem>=2.8.0
+claw-rl>=2.7.0
