@@ -26,7 +26,7 @@ from claw_cog.core.workspace import GlobalWorkspace
 from claw_cog.core.layers import LayerManager
 from claw_cog.config.defaults import Config
 
-__version__ = "1.0.0a1"
+__version__ = "1.0.0a2"
 __all__ = [
     "ConsciousAgent",
     "ConsciousnessLevel",
