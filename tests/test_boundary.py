@@ -1,7 +1,7 @@
 """Tests for Boundary Cognition Module."""
 
 import pytest
-from claw_cog.boundary import (
+from claw_cog_legacy.boundary import (
     BoundaryCognition,
     Boundary,
     BoundaryType,

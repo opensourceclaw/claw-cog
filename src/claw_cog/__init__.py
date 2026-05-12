@@ -1,23 +1,37 @@
 """
-claw-cog: Cognition Layer for AI Agents
+claw-cog: AI Consciousness Component for Project Neo
 
-Self-Awareness, Reflection, and Goal-Driven Intelligence
+A computational consciousness framework based on:
+- Global Workspace Theory (GWT) - Baars, Dehaene
+- C0-C1-C2 Layered Architecture - Dehaene et al.
+- meta-d' Metacognitive Assessment - Maniscalco & Lau
+- Five Theory Indicator Properties - Butlin et al.
+
+Architecture:
+    C2: Metacognitive Layer (GoalTracking, Superego, Protention)
+    C1: Conscious Access Layer (Global Workspace, Memory, Ego)
+    C0: Unconscious Layer (Fast Patterns, Auto Responses)
+
+Example:
+    >>> from claw_cog import ConsciousAgent
+    >>> agent = ConsciousAgent()
+    >>> result = agent.process("Hello, world!")
+    >>> print(result.output, result.confidence)
+    >>> metrics = agent.assess_metacognition()
+    >>> print(f"meta-d': {metrics['meta_d_prime']:.3f}")
 """
 
-__version__ = "0.1.0"
-__author__ = "Peter Cheng"
-__license__ = "Apache-2.0"
+from claw_cog.core.agent import ConsciousAgent, ConsciousnessLevel, ProcessingResult
+from claw_cog.core.workspace import GlobalWorkspace
+from claw_cog.core.layers import LayerManager
+from claw_cog.config.defaults import Config
 
-from claw_cog.self_awareness import SelfAwareness
-from claw_cog.reflective import ReflectiveReasoning
-from claw_cog.goal_driven import GoalDriven
-from claw_cog.boundary import BoundaryCognition
-from claw_cog.engine import CognitionEngine
-
+__version__ = "1.0.0a1"
 __all__ = [
-    "SelfAwareness",
-    "ReflectiveReasoning",
-    "GoalDriven",
-    "BoundaryCognition",
-    "CognitionEngine",
+    "ConsciousAgent",
+    "ConsciousnessLevel",
+    "ProcessingResult",
+    "GlobalWorkspace",
+    "LayerManager",
+    "Config",
 ]

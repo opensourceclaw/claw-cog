@@ -1,9 +1,9 @@
 """Tests for Cognition Engine."""
 
 import pytest
-from claw_cog import CognitionEngine
-from claw_cog.self_awareness import Identity
-from claw_cog.goal_driven import GoalPriority
+from claw_cog_legacy import CognitionEngine
+from claw_cog_legacy.self_awareness import Identity
+from claw_cog_legacy.goal_driven import GoalPriority
 
 
 class TestCognitionEngine:

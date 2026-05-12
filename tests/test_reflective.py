@@ -1,7 +1,7 @@
 """Tests for Reflective Reasoning Module."""
 
 import pytest
-from claw_cog.reflective import (
+from claw_cog_legacy.reflective import (
     ReflectiveReasoning,
     Action,
     Outcome,

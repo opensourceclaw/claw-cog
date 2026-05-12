@@ -1,7 +1,7 @@
 """Tests for Goal-Driven Module."""
 
 import pytest
-from claw_cog.goal_driven import (
+from claw_cog_legacy.goal_driven import (
     GoalDriven,
     Goal,
     GoalStatus,

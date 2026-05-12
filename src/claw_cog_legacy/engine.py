@@ -11,10 +11,10 @@ Main orchestrator for all cognition capabilities:
 from typing import Optional, Dict, Any
 from pathlib import Path
 
-from claw_cog.self_awareness import SelfAwareness, Identity
-from claw_cog.reflective import ReflectiveReasoning, Reflection, Action, Outcome
-from claw_cog.goal_driven import GoalDriven, Goal, Progress, GoalPriority
-from claw_cog.boundary import BoundaryCognition
+from claw_cog_legacy.self_awareness import SelfAwareness, Identity
+from claw_cog_legacy.reflective import ReflectiveReasoning, Reflection, Action, Outcome
+from claw_cog_legacy.goal_driven import GoalDriven, Goal, Progress, GoalPriority
+from claw_cog_legacy.boundary import BoundaryCognition
 
 
 class CognitionEngine:

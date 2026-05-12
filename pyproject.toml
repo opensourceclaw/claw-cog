@@ -4,48 +4,51 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "claw-cog"
-version = "0.1.0"
-description = "Cognition Layer for AI Agents - Self-Awareness, Reflection, and Goal-Driven Intelligence"
+version = "1.0.0a1"
+description = "AI Consciousness Component for Project Neo - Based on Global Workspace Theory and C0-C1-C2 Framework"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 authors = [
     {name = "Peter Cheng"}
 ]
 keywords = [
-    "cognition",
     "consciousness",
     "ai",
-    "llm",
+    "cognition",
+    "metacognition",
+    "global-workspace",
+    "awareness",
     "agent",
     "openclaw",
-    "self-awareness",
-    "reflection",
-    "goal-driven",
+    "project-neo",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "claw-mem>=2.8.0",
     "claw-rl>=2.7.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
-    "pytest-benchmark",
+    "pytest-benchmark>=4.0.0",
     "pytest-cov>=3.0.0",
-    "mypy>=0.950",
-    "black>=22.0.0",
-    "flake8>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+    "mypy>=1.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
 ]
 
 [project.urls]
@@ -65,7 +68,7 @@ where = ["src"]
 
 [tool.black]
 line-length = 100
-target-version = ['py38', 'py39', 'py310', 'py311']
+target-version = ['py310', 'py311', 'py312']
 include = '\.pyi?$'
 exclude = '''
 /(
@@ -77,25 +80,24 @@ exclude = '''
   | buck-out
   | build
   | dist
+  | legacy
 )/
 '''
 
-[tool.flake8]
-max-line-length = 100
+[tool.ruff]
+line-length = 100
+target-version = "py310"
 exclude = [
     ".git",
     "__pycache__",
     "build",
     "dist",
     ".venv",
-]
-ignore = [
-    "E203",
-    "W503",
+    "legacy",
 ]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
@@ -121,6 +123,7 @@ testpaths = [
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
+    "benchmark: marks tests as benchmark tests",
 ]
 
 [tool.coverage.run]
@@ -129,6 +132,7 @@ branch = true
 omit = [
     "*/tests/*",
     "*/__init__.py",
+    "*/legacy/*",
 ]
 
 [tool.coverage.report]
