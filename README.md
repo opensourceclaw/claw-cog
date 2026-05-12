@@ -3,12 +3,12 @@
 <div align="center">
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Python](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/Version-0.1.0-orange.svg)](https://github.com/opensourceclaw/claw-cog)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
+[![Version](https://img.shields.io/badge/Version-1.0.0--alpha.2-orange.svg)](https://github.com/opensourceclaw/claw-cog)
 
-**Cognition Layer for AI Agents**
+**AI Consciousness Component for Project Neo**
 
-Self-Awareness • Reflection • Goal-Driven Intelligence
+Global Workspace · C0-C1-C2 Architecture · Metacognitive Assessment
 
 </div>
 
@@ -16,182 +16,167 @@ Self-Awareness • Reflection • Goal-Driven Intelligence
 
 ## Overview
 
-**claw-cog** is the **Cognition Layer** of Project Neo, providing AI agents with self-awareness, reflective reasoning, and goal-driven capabilities. It builds on top of:
+**claw-cog** is the **Consciousness Layer** of Project Neo, implementing AI consciousness capabilities based on established cognitive neuroscience theories:
 
-- **claw-mem**: Memory Layer (storage, retrieval, temporal reasoning)
-- **claw-rl**: Learning Layer (feedback, rule extraction, optimization)
+- **Global Workspace Theory** (GNWT) — Baars, Dehaene
+- **C0-C1-C2 Layered Architecture** — Dehaene et al.
+- **meta-d' Metacognition** — Maniscalco & Lau
 
-Together, these form the foundation for **Digital Consciousness**.
-
----
-
-## Core Capabilities
-
-### 1. Self-Awareness Module
-
-```python
-from claw_cog import SelfAwareness
-
-awareness = SelfAwareness()
-identity = awareness.get_identity()
-# → "I am Friday, an AI assistant designed to help Peter..."
-
-state = awareness.get_current_state()
-# → "I am currently analyzing a project architecture..."
-```
-
-### 2. Reflective Reasoning Module
-
-```python
-from claw_cog import ReflectiveReasoning
-
-reflection = ReflectiveReasoning()
-result = reflection.reflect_on_action(action, outcome)
-# → "This action succeeded because..."
-```
-
-### 3. Goal-Driven Module
-
-```python
-from claw_cog import GoalDriven
-
-goal_system = GoalDriven()
-goal_system.set_goal("Complete neoclaw v3.1 development")
-progress = goal_system.evaluate_progress()
-# → "25% complete, 3 sub-goals remaining"
-```
+It builds on [claw-mem](https://github.com/opensourceclaw/claw-mem) (memory) and [claw-rl](https://github.com/opensourceclaw/claw-rl) (learning), together forming **Digital Consciousness**.
 
 ---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│           Cognition Layer (claw-cog)     │
-│  Self-Awareness | Reflection | Goals    │
-├─────────────────────────────────────────┤
-│           Learning Layer (claw-rl)       │
-│  Feedback | Rules | Optimization         │
-├─────────────────────────────────────────┤
-│           Memory Layer (claw-mem)        │
-│  Store | Retrieve | Temporal | Context  │
-└─────────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│              C2: Metacognitive                │
+│     Self-Monitoring · Confidence Assessment   │
+│          Goal Tracking · Protention           │
+├──────────────────────────────────────────────┤
+│          C1: Conscious Access (GWT)           │
+│    Global Workspace · Integration · Broadcast │
+├──────────────────────────────────────────────┤
+│             C0: Unconscious                   │
+│     Pattern Matching · Auto Responses ·       │
+│            Primal Impressions                 │
+└──────────────────────────────────────────────┘
+         ↕                        ↕
+    claw-mem (Memory)      claw-rl (Learning)
 ```
+
+**Processing Pipeline**: `Input → Memory Retrieval → C0 Pattern Match → C1 Workspace Broadcast → C2 Metacognitive Monitor → Output`
+
+**Indicator Properties** (Butlin et al.):
+
+| Theory | Indicator | v1.0.0 |
+|--------|-----------|:------:|
+| GWT | Global Workspace Theory | ✅ |
+| RPT | Recurrent Processing Theory | ✅ |
+| HOT | Higher-Order Thought Theory | ✅ |
+| AST | Attention Schema Theory | ✅ |
+| PP | Perceptual Presence | v2.0.0 |
 
 ---
 
 ## Installation
 
 ```bash
-# From GitHub (recommended during development)
 pip install git+https://github.com/opensourceclaw/claw-cog.git
 
-# With development dependencies
+# With dev dependencies (testing, linting, benchmarking)
 pip install "git+https://github.com/opensourceclaw/claw-cog.git[dev]"
 ```
+
+**Requirements**: Python ≥ 3.10, [claw-mem](https://github.com/opensourceclaw/claw-mem) ≥ 2.8.0
 
 ---
 
 ## Quick Start
 
 ```python
-from claw_cog import CognitionEngine
+from claw_cog import ConsciousAgent
 
-# Initialize cognition engine
-engine = CognitionEngine(
-    memory_provider="claw-mem",
-    learning_provider="claw-rl"
+# Create an agent (C2 metacognition enabled by default)
+agent = ConsciousAgent()
+
+# Process input through consciousness layers
+result = agent.process("What is the current project status?")
+print(f"Output: {result.output}")
+print(f"Confidence: {result.confidence:.2f}")
+print(f"Level: {result.level.name}")
+
+# Check consciousness indicator properties
+indicators = agent.get_indicator_properties()
+# → {"GWT": True, "RPT": True, "HOT": True, "PP": False, "AST": True}
+
+# Assess metacognitive ability (needs 10+ processing rounds)
+metrics = agent.assess_metacognition()
+print(f"meta-d': {metrics['meta_d_prime']}")
+print(f"M-ratio: {metrics['m_ratio']}")
+```
+
+**Custom Configuration**:
+
+```python
+from claw_cog import Config, ConsciousAgent
+
+config = Config(
+    c2_enabled=True,
+    c0_pattern_threshold=0.6,
+    workspace_max_subscribers=20,
 )
+agent = ConsciousAgent(config=config)
+```
 
-# Self-awareness
-identity = engine.who_am_i()
-print(identity)
-# → Identity(name="Friday", role="AI Assistant", ...)
+**Without C2** (lighter, no metacognition):
 
-# Reflection
-reflection = engine.reflect("Why did the last task fail?")
-print(reflection.insight)
-
-# Goal pursuit
-engine.set_goal("Help user complete the project")
-progress = engine.evaluate_progress()
+```python
+agent = ConsciousAgent(enable_c2=False)
+# HOT indicator will be False
 ```
 
 ---
 
-## Project Structure
+## Core Components
 
-```
-claw-cog/
-├── src/
-│   └── claw_cog/
-│       ├── __init__.py
-│       ├── self_awareness.py      # Self-awareness module
-│       ├── reflective.py          # Reflective reasoning
-│       ├── goal_driven.py         # Goal-driven behavior
-│       ├── boundary.py            # Capability & ethical boundaries
-│       ├── engine.py              # Cognition engine
-│       └── bridge.py              # Integration with claw-mem/rl
-├── tests/
-│   ├── test_self_awareness.py
-│   ├── test_reflective.py
-│   └── test_goal_driven.py
-├── docs/
-│   ├── architecture.md
-│   └── api-reference.md
-├── skill/
-│   ├── SKILL.md
-│   ├── scripts/
-│   └── references/
-├── benchmarks/
-├── examples/
-├── pyproject.toml
-└── README.md
-```
+| Component | Description |
+|-----------|-------------|
+| `ConsciousAgent` | Main entry point — orchestrates the full pipeline |
+| `GlobalWorkspace` | GNWT implementation — subscriber broadcast + integration |
+| `LayerManager` | Manages C0/C1/C2 layers and feedback loops |
+| `C0Unconscious` | Fast pattern matching, auto responses, primal impressions |
+| `C1Conscious` | Memory retrieval, integration, decision making |
+| `C2Metacognitive` | Self-monitoring, confidence assessment, competence awareness |
+| `MetacognitiveAssessment` | meta-d' framework for metacognitive evaluation |
+| `ClawMemBridge` | Memory integration bridge to claw-mem |
 
 ---
 
-## Development Status
+## Development
 
-| Version | Status | Focus |
-|---------|--------|-------|
-| **v0.1.0** | 🚧 Alpha | Core architecture, basic self-awareness |
-| **v0.2.0** | Planned | Reflective reasoning, goal decomposition |
-| **v0.3.0** | Planned | Integration with claw-mem/rl |
-| **v1.0.0** | Future | Production-ready cognition layer |
+```bash
+# Run tests
+pytest                                 # All tests
+pytest tests/ -m "not benchmark"       # Skip benchmarks
+
+# Benchmark
+pytest tests/benchmarks/ -v            # Performance tests
+
+# Coverage
+pytest --cov=claw_cog --cov-report=html
+```
+
+**Current Status**: Alpha (v1.0.0-alpha.2) — 123 tests, 80% coverage
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Quick Start](docs/QUICK_START.md) | Installation and basic usage |
+| [API Reference](docs/API.md) | Full API documentation |
+| [Architecture](docs/ARCHITECTURE.md) | Architecture overview and design decisions |
+| [Version Roadmap](docs/VERSION_ROADMAP.md) | Planned releases and milestones |
+| [CHANGELOG](CHANGELOG.md) | Version history and changes |
 
 ---
 
 ## Integration with Project Neo
 
-claw-cog is part of **Project Neo**:
-
-| Project | Role | Status |
-|---------|------|--------|
+| Component | Role | Status |
+|-----------|------|--------|
 | **claw-mem** | Memory Layer | ✅ Production |
 | **claw-rl** | Learning Layer | ✅ Production |
-| **claw-cog** | Cognition Layer | 🚧 Alpha |
+| **claw-cog** | Consciousness Layer | 🚧 Alpha |
 | **neoclaw** | Integration Layer | ✅ Active |
-
----
-
-## Contributing
-
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ---
 
 ## License
 
-Apache License 2.0 - see [LICENSE](LICENSE) for details.
-
----
-
-## Links
-
-- **GitHub**: https://github.com/opensourceclaw/claw-cog
-- **Documentation**: https://github.com/opensourceclaw/claw-cog/tree/main/docs
-- **Project Neo**: https://github.com/opensourceclaw
+Apache License 2.0 — see [LICENSE](LICENSE) for details.
 
 ---
 

@@ -1,141 +1,178 @@
 # Architecture Overview
 
+claw-cog v1.0.0 implements three core cognitive neuroscience theories: **Global Workspace Theory** (GNWT), **C0-C1-C2 Layered Architecture**, and **meta-d' Metacognition**.
+
+---
+
+## Theoretical Foundation
+
+### Global Workspace Theory (GNWT)
+
+Proposed by Baars (1988) and refined by Dehaene (2014), GNWT posits that consciousness arises from a global workspace that:
+- Receives input from specialized unconscious processors
+- **Broadcasts** selected information to the entire system
+- Enables **global access** — any module can use the information
+
+### C0-C1-C2 Architecture
+
+Dehaene's three-level framework:
+
+| Level | Name | Function | Analogous to |
+|-------|------|----------|-------------|
+| **C0** | Unconscious | Automatic processing, pattern recognition | Freud's Id |
+| **C1** | Conscious Access | Global availability, integration | Freud's Ego |
+| **C2** | Metacognitive | Self-monitoring, confidence assessment | Freud's Superego |
+
+### meta-d' Framework
+
+Maniscalco & Lau's SDT-based method for measuring metacognitive sensitivity — the ability to distinguish correct from incorrect decisions using confidence ratings.
+
+---
+
 ## System Architecture
 
-claw-cog implements the **Cognition Layer** of Project Neo, providing AI agents with self-awareness, reflective reasoning, and goal-driven capabilities.
-
-## Layer Stack
-
 ```
-┌─────────────────────────────────────────┐
-│           Application Layer             │
-│     (neoclaw, user applications)        │
-├─────────────────────────────────────────┤
-│        Cognition Layer (claw-cog)       │
-│  Self-Awareness | Reflection | Goals    │
-├─────────────────────────────────────────┤
-│        Learning Layer (claw-rl)         │
-│  Feedback | Rules | Optimization        │
-├─────────────────────────────────────────┤
-│         Memory Layer (claw-mem)         │
-│  Store | Retrieve | Temporal | Context  │
-└─────────────────────────────────────────┘
-```
-
-## Core Modules
-
-### 1. Self-Awareness Module
-
-**Purpose**: Enable AI to know who it is and what it's doing.
-
-**Key Components**:
-- `Identity`: AI's self-concept
-- `CurrentState`: What the AI is doing now
-- `Intention`: Why the AI is doing something
-
-**API**:
-```python
-from claw_cog import SelfAwareness
-
-awareness = SelfAwareness()
-identity = awareness.get_identity()
-state = awareness.get_current_state()
-intention = awareness.get_intention()
+                        ┌─────────────────────┐
+                        │   ConsciousAgent     │
+                        │   (Orchestrator)     │
+                        └──────────┬──────────┘
+                                   │
+          ┌────────────────────────┼────────────────────────┐
+          │                        │                        │
+    ┌─────▼─────┐          ┌──────▼──────┐         ┌───────▼───────┐
+    │  Layer    │          │   Global    │         │ Metacognitive │
+    │  Manager  │          │  Workspace  │         │  Assessment   │
+    └─────┬─────┘          └──────┬──────┘         └───────────────┘
+          │                       │
+    ┌─────┼─────────────┐         │
+    │     │             │         │
+┌───▼──┐ ┌▼────┐  ┌─────▼──┐     │
+│  C0  │ │ C1  │  │   C2   │     │
+└──────┘ └─────┘  └────────┘     │
+          │                       │
+    ┌─────▼─────┐                 │
+    │ claw-mem  │◄────────────────┘
+    │  Bridge   │
+    └───────────┘
 ```
 
-### 2. Reflective Reasoning Module
+---
 
-**Purpose**: Enable AI to reflect on its behaviors and decisions.
+## Processing Pipeline
 
-**Key Components**:
-- `Action`: Represents an action taken
-- `Outcome`: Result of an action
-- `Reflection`: Analysis of action-outcome pair
-- `MetaReasoning`: Metacognitive analysis
-
-**API**:
-```python
-from claw_cog import ReflectiveReasoning
-
-reflection = ReflectiveReasoning()
-result = reflection.reflect_on_action(action, outcome)
-meta = reflection.meta_reasoning(problem)
+```
+Input
+  │
+  ▼
+[Mempry Retrieval] → claw-mem search → inject into context
+  │
+  ▼
+[C0: Unconscious]  → auto-response → pattern match → primal impression
+  │                   contribution: 0.8 | varies | 0.3
+  ▼
+[C1: Workspace]    → integrate(input, C0, memory, ego) → broadcast
+  │                   weighted by confidence scores
+  ▼
+[C2: Metacog.]     → monitor confidence level:
+  │                   ≥0.8 → none (trusted)
+  │                   ≥0.5 → strategy adjustment
+  │                   ≥0.3 → confidence adjustment
+  │                   <0.3 → seek_help
+  ▼
+[Build Result]     → ProcessingResult(output, confidence, level, metadata)
+  │
+  ▼
+[Record History]   → append for metacognitive assessment
 ```
 
-### 3. Goal-Driven Module
+---
 
-**Purpose**: Enable AI to set and pursue goals autonomously.
+## Component Details
 
-**Key Components**:
-- `Goal`: Represents a goal
-- `Progress`: Progress tracking
-- `GoalDriven`: Goal management system
+### C0: Unconscious Layer
 
-**API**:
-```python
-from claw_cog import GoalDriven
+Three-stage fast processing:
 
-goals = GoalDriven()
-goal = goals.set_goal("Complete the project")
-progress = goals.evaluate_progress()
-```
+1. **Auto Response** — Exact/prefix/regex triggers → contribution 0.8
+2. **Pattern Matching** — Multi-keyword weighted scoring → score = min(1.0, matched/total × 0.8 + 0.2)
+3. **Primal Impression** — Extract key features as fallback → contribution 0.3
 
-### 4. Boundary Cognition Module
+### C1: Global Workspace
 
-**Purpose**: Enable AI to understand its capabilities and ethical limits.
+- **Integration** — Weighted combination: input(0.3) + C0(varies) + memory(0.8) + ego(0.7)
+- **Broadcast** — Notify all subscribers, compute integration score
+- **Subscriber Limit** — Configurable max via `workspace_max_subscribers`
 
-**Key Components**:
-- `Boundary`: Represents a boundary
-- `BoundaryCognition`: Boundary management
+### C2: Metacognitive Layer
 
-**API**:
-```python
-from claw_cog import BoundaryCognition
+- **Confidence Monitor** — Four-band escalation
+- **Competence Assessment** — MUSE framework (known coverage, novelty, risk)
+- **Adjustment Types** — `none`, `strategy`, `confidence`, `seek_help`
 
-boundaries = BoundaryCognition()
-can_do = boundaries.check_capability(action)
-should_do = boundaries.check_ethical(action)
-```
+### Metacognitive Assessment
 
-## Integration with claw-mem and claw-rl
+- **d'** — Type-1 sensitivity (task performance)
+- **meta-d'** — Type-2 sensitivity (metacognitive ability)
+- **M-ratio** — Metacognitive efficiency (~1.0 optimal)
+- **Type-2 ROC AUC** — Discrimination of correct vs. incorrect
 
-### Memory Integration
+---
 
-claw-cog uses claw-mem for:
-- Storing reflections and lessons learned
-- Persisting goal history
-- Remembering identity and context
+## Indicator Properties
 
-### Learning Integration
+From Butlin et al., five falsifiable indicators for AI consciousness:
 
-claw-cog uses claw-rl for:
-- Improving reflection quality over time
-- Optimizing goal strategies
-- Learning from past actions
+| Theory | Indicator | v1.0.0 | Implementation |
+|--------|-----------|:------:|----------------|
+| GWT | Global Workspace Theory | ✅ | `GlobalWorkspace` with subscriber broadcast |
+| RPT | Recurrent Processing Theory | ✅ | C0→C1→C2 feedback loop with adjustment |
+| HOT | Higher-Order Thought Theory | ✅ | C2 metacognitive monitoring |
+| AST | Attention Schema Theory | ✅ | Workspace subscriber/attention mechanism |
+| PP | Perceptual Presence | v2.0.0 | Planned sensory integration |
 
-## Design Principles
+---
 
-1. **Separation of Concerns**: Each module handles one aspect of cognition
-2. **Provider Pattern**: Support multiple memory/learning providers
-3. **Immutability**: Core data structures are immutable
-4. **Type Safety**: Full type annotations for all public APIs
+## Memory Integration
 
-## Performance Considerations
+`ClawMemBridge` connects to [claw-mem](https://github.com/opensourceclaw/claw-mem):
 
-- Minimal overhead: <5ms for basic operations
-- Lazy loading: Load resources only when needed
-- Caching: Cache frequently used identity/state
+- **Retrieve** — Relevant memories injected as context
+- **Store** — Reflections when C2 detects adjustment needs
+- **Format** — Context-aware token budgeting
 
-## Extension Points
+---
 
-1. **Custom Memory Providers**: Implement provider interface
-2. **Custom Learning Providers**: Implement provider interface
-3. **Custom Reflection Strategies**: Extend ReflectiveReasoning
-4. **Custom Goal Decomposition**: Extend GoalDriven
+## Configuration
 
-## Future Enhancements
+Centralized in the `Config` dataclass:
 
-- Vector-based similarity search for reflections
-- Reinforcement learning for goal prioritization
-- Multi-agent cognition coordination
-- Emotion and personality modeling
+| Category | Setting | Default |
+|----------|---------|---------|
+| Workspace | `workspace_broadcast_timeout_ms` | 100 |
+| Workspace | `workspace_max_subscribers` | 10 |
+| C0 | `c0_pattern_threshold` | 0.7 |
+| C0 | `c0_auto_response_enabled` | True |
+| C1 | `c1_confidence_threshold` | 0.7 |
+| C2 | `c2_enabled` | True |
+| C2 | `c2_high/medium/low_threshold` | 0.8 / 0.5 / 0.3 |
+| Assessment | `assessment_min_samples` | 10 |
+| Assessment | `assessment_history_size` | 1000 |
+
+---
+
+## Design Decisions
+
+1. **GNWT over competing theories** — Strongest empirical support, clear engineering mapping
+2. **C0-C1-C2 as implementation framework** — Concrete, testable layered architecture
+3. **meta-d' as metacognition standard** — Quantitative, signal-detection-based benchmarks
+4. **Subscriber pattern for workspace** — Matches GNWT's "global availability" concept
+5. **Butlin indicators as coverage metric** — Falsifiable evaluation criteria
+
+---
+
+## See Also
+
+- [API Reference](API.md) — Complete API documentation
+- [Quick Start](QUICK_START.md) — Getting started guide
+- [V1 Architecture Design](architecture/V1_ARCHITECTURE.md) — Detailed design with pseudocode
+- [Version Roadmap](VERSION_ROADMAP.md) — Release planning

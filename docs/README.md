@@ -9,6 +9,9 @@
 
 ```
 claw-cog/docs/
+├── API.md                          # API 参考文档
+├── ARCHITECTURE.md                 # 架构概览
+├── QUICK_START.md                  # 快速上手指南
 ├── VERSION_ROADMAP.md              # 版本规划
 ├── architecture/
 │   ├── DESIGN_PROPOSAL.md          # 架构设计提案 (基于论文)
@@ -57,7 +60,38 @@ claw-cog/docs/
 - 依赖管理
 - 实现优先级
 
-### 4. papers/
+### 4. API.md
+
+**内容**: 完整 API 参考
+
+- ConsciousAgent、GlobalWorkspace、LayerManager 等核心类
+- C0/C1/C2 层 API
+- MetacognitiveAssessment API
+- Config 配置项
+- 数据类定义
+
+### 5. ARCHITECTURE.md
+
+**内容**: v1.0.0 架构概览
+
+- 理论基础 (GNWT, C0-C1-C2, meta-d')
+- 系统架构图
+- 处理流水线
+- 各组件详情
+- 指示属性与实现映射
+- 设计决策记录
+
+### 6. QUICK_START.md
+
+**内容**: 快速上手指南
+
+- 安装步骤
+- 第一个 Agent
+- 自定义配置
+- 各层独立使用示例
+- FAQ
+
+### 7. papers/
 
 **内容**: 论文阅读资料
 
@@ -69,6 +103,18 @@ claw-cog/docs/
 
 ## 🎯 快速导航
 
+### 想快速上手?
+
+→ 阅读 `QUICK_START.md`
+
+### 想了解 API?
+
+→ 阅读 `API.md`
+
+### 想了解架构设计?
+
+→ 阅读 `ARCHITECTURE.md` (概览) 或 `architecture/V1_ARCHITECTURE.md` (详细)
+
 ### 想了解版本规划?
 
 → 阅读 `VERSION_ROADMAP.md`
@@ -77,11 +123,7 @@ claw-cog/docs/
 
 → 阅读 `architecture/papers/READING_SUMMARY.md`
 
-### 想开始实现 v1.0.0?
-
-→ 阅读 `architecture/V1_ARCHITECTURE.md`
-
-### 想查看特定论文?
+### 想看特定论文?
 
 → 查看 `architecture/papers/notes/` 目录
 
@@ -144,29 +186,12 @@ claw-cog/docs/
 
 ## 🚀 下一步
 
-### 立即行动
-
-1. **创建项目结构**
-   ```bash
-   cd /Users/liantian/workspace/osprojects/claw-cog
-   mkdir -p claw_cog/{core,layers,modules,assessment,integration,config,utils}
-   mkdir -p tests/{test_layers,test_modules,test_assessment,test_integration}
-   ```
-
-2. **实现核心模块**
-   - ConsciousAgent
-   - GlobalWorkspace
-   - LayerManager
-
-3. **设置测试框架**
-   - pytest 配置
-   - 指示属性测试
 
 ### 后续文档
 
+- [x] API.md (API 参考文档)
 - [ ] V2_ARCHITECTURE.md (v2.0.0 架构设计)
 - [ ] V3_ARCHITECTURE.md (v3.0.0 架构设计)
-- [ ] API_REFERENCE.md (API 参考文档)
 - [ ] INTEGRATION_GUIDE.md (集成指南)
 
 ---
