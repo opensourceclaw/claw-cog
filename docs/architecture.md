@@ -1,6 +1,6 @@
 # Architecture Overview
 
-claw-cog v1.0.0 implements three core cognitive neuroscience theories: **Global Workspace Theory** (GNWT), **C0-C1-C2 Layered Architecture**, and **meta-d' Metacognition**.
+claw-cog v1.0.0a3 implements three core cognitive neuroscience theories: **Global Workspace Theory** (GNWT), **C0-C1-C2 Layered Architecture**, and **meta-d' Metacognition**.
 
 ---
 
@@ -64,7 +64,7 @@ Maniscalco & Lau's SDT-based method for measuring metacognitive sensitivity — 
 Input
   │
   ▼
-[Mempry Retrieval] → claw-mem search → inject into context
+[Memory Retrieval] → claw-mem search → inject into context
   │
   ▼
 [C0: Unconscious]  → auto-response → pattern match → primal impression

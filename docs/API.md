@@ -1,6 +1,6 @@
 # API Reference
 
-This document covers the public API of claw-cog v1.0.0.
+This document covers the public API of claw-cog v1.0.0a3.
 
 ---
 
@@ -133,7 +133,7 @@ config = Config(
 
 #### Class Methods
 
-- `from_dict(data: dict) -> Config` — Create config from dictionary
+- `from_dict(data: dict) -> Config` — Create config from dictionary (raises `ConfigurationError` if input is not a dict)
 - `to_dict() -> dict` — Serialize config to dictionary
 
 ---
@@ -447,4 +447,35 @@ class C1Result:
     confidence: float
     broadcast_time_ms: float
     metadata: Dict[str, Any]
+```
+
+---
+
+## Custom Exceptions
+
+All exceptions inherit from `ClawCogError`.
+
+```python
+from claw_cog import ClawCogError, ConfigurationError, LayerError, WorkspaceError, AssessmentError
+```
+
+| Exception | Description |
+|-----------|-------------|
+| `ClawCogError` | Base exception for all claw-cog errors |
+| `ConfigurationError` | Configuration validation error (e.g. invalid threshold, non-dict input) |
+| `LayerError` | Layer processing error |
+| `WorkspaceError` | Global workspace error |
+| `AssessmentError` | Metacognitive assessment error |
+
+### Type Protocols
+
+```python
+from claw_cog.types import Subscriber
+
+# Subscriber is a Protocol — any callable with matching signature works
+def my_handler(content: Any) -> Any:
+    return {"processed": content}
+
+# No explicit subclassing needed
+ws.subscribe(my_handler)  # my_handler is a valid Subscriber
 ```

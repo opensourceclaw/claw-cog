@@ -265,3 +265,11 @@ Yes — `ConsciousAgent(enable_c2=False)`. The HOT indicator will report `False`
 **Q: Why is my confidence always around 0.5?**
 
 Without registered C0 patterns or memory context, processing falls through to primal impression (contribution 0.3). Register patterns with `c0.add_pattern()` for higher contributions.
+
+**Q: What errors can the agent raise?**
+
+`ConfigurationError` — raised when `confidence_threshold` is not 0.0-1.0, or `Config.from_dict()` receives non-dict input. All exceptions inherit from `ClawCogError`.
+
+**Q: What's the current test coverage?**
+
+v1.0.0-alpha.3: 114 tests, 91% coverage.

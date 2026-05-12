@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/Version-1.0.0--alpha.2-orange.svg)](https://github.com/opensourceclaw/claw-cog)
+[![Version](https://img.shields.io/badge/Version-1.0.0--alpha.3-orange.svg)](https://github.com/opensourceclaw/claw-cog)
 
 **AI Consciousness Component for Project Neo**
 
@@ -130,6 +130,8 @@ agent = ConsciousAgent(enable_c2=False)
 | `C2Metacognitive` | Self-monitoring, confidence assessment, competence awareness |
 | `MetacognitiveAssessment` | meta-d' framework for metacognitive evaluation |
 | `ClawMemBridge` | Memory integration bridge to claw-mem |
+| `ConfigurationError` | Configuration validation error |
+| `ClawCogError` | Base exception for all claw-cog errors |
 
 ---
 
@@ -147,7 +149,7 @@ pytest tests/benchmarks/ -v            # Performance tests
 pytest --cov=claw_cog --cov-report=html
 ```
 
-**Current Status**: Alpha (v1.0.0-alpha.2) — 123 tests, 80% coverage
+**Current Status**: Alpha (v1.0.0-alpha.3) — 114 tests, 91% coverage
 
 ---
 
