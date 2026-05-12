@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [1.0.0a3] - 2026-05-13
+### Added
+- Indicator properties test suite (RPT 5, HOT 6, AST 5 tests)
+- Performance benchmarks (GWT/C0/meta-d'/end-to-end)
+- Custom exceptions (ClawCogError, ConfigurationError, LayerError, WorkspaceError, AssessmentError)
+- Subscriber Protocol type definition
+- CLI test coverage
+- Config validation and error handling
+
+### Changed
+- Coverage 80% → 91%
+- Tests 84 → 114
+- Type safety: replaced `Any` with concrete types
+- README completely rewritten for v1.0.0 architecture
+- docs/API.md: full API reference
+- docs/ARCHITECTURE.md: complete architecture overview
+- docs/QUICK_START.md: installation and usage guide
+
+### Fixed
+- pyproject.toml version sync with __init__.py
+
 ## [1.0.0a2] - 2026-05-12
 ### Added
 - GlobalWorkspace weighted integration
