@@ -7,10 +7,13 @@ Implements Global Workspace Theory (Baars, Dehaene):
 - Conscious access control
 """
 
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 from time import time
 import logging
+
+from claw_cog.config.defaults import Config
+from claw_cog.types import Subscriber
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +53,7 @@ class GlobalWorkspace:
         >>> result = workspace.process(input, c0_output, context)
     """
 
-    def __init__(self, config: Any):
+    def __init__(self, config: Config):
         """
         Initialize global workspace.
 
@@ -58,7 +61,7 @@ class GlobalWorkspace:
             config: Configuration object
         """
         self.config = config
-        self._subscribers: List[Callable] = []
+        self._subscribers: List[Subscriber] = []
         self._current_state: Optional[WorkspaceState] = None
         self._broadcast_history: List[WorkspaceState] = []
 
@@ -66,7 +69,7 @@ class GlobalWorkspace:
         self._avg_broadcast_time_ms: float = 0.0
         self._total_broadcasts: int = 0
 
-    def subscribe(self, module: Callable[[Any], Any]) -> None:
+    def subscribe(self, module: Subscriber) -> None:
         """
         Subscribe a module to workspace broadcasts.
 
@@ -81,7 +84,7 @@ class GlobalWorkspace:
         self._subscribers.append(module)
         logger.debug(f"Module subscribed. Total: {len(self._subscribers)}")
 
-    def unsubscribe(self, module: Callable) -> None:
+    def unsubscribe(self, module: Subscriber) -> None:
         """Unsubscribe a module."""
         if module in self._subscribers:
             self._subscribers.remove(module)

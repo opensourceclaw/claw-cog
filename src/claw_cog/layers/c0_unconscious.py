@@ -10,6 +10,8 @@ from dataclasses import dataclass
 import logging
 import re
 
+from claw_cog.config.defaults import Config
+
 logger = logging.getLogger(__name__)
 
 
@@ -27,7 +29,7 @@ class C0Unconscious:
     """C0: Unconscious Layer — fast pattern matching, auto responses,
     primal impression formation. Operates below awareness threshold."""
 
-    def __init__(self, config: Any):
+    def __init__(self, config: Config):
         self.config = config
         self._patterns: Dict[str, List[str]] = {}
         self._auto_responses: Dict[str, Any] = {}

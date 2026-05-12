@@ -5,9 +5,14 @@ Global workspace access, decision making, information integration.
 Based on Freud's Ego and Husserl's Retention.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 import logging
+
+from claw_cog.config.defaults import Config
+
+if TYPE_CHECKING:
+    from claw_cog.integration.claw_mem_bridge import ClawMemBridge
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +35,7 @@ class C1Conscious:
     in this layer is accessible for report and decision (Dehaene's C1).
     """
 
-    def __init__(self, config: Any, memory_bridge: Any = None):
+    def __init__(self, config: Config, memory_bridge: "Optional[ClawMemBridge]" = None):
         self.config = config
         self._memory_bridge = memory_bridge
         self._active = True

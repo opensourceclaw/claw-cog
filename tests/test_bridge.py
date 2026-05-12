@@ -46,12 +46,12 @@ class TestClawMemBridge:
         )
         assert isinstance(results, list)
 
-    def test_get_stats(self):
+    def test_store_and_retrieve_stats(self):
+        """Store memories and check stats (fixed from old duplicate)."""
         self.bridge.store("reflection", "Memory A")
         self.bridge.store("reflection", "Memory B")
-        context = self.bridge.get_context("test query")
-        assert isinstance(context, str)
-        assert "Memory A" in context or "Memory B" in context
+        stats = self.bridge.get_stats()
+        assert "backend" in stats
 
     def test_format_context(self):
         memories = [
@@ -69,7 +69,32 @@ class TestClawMemBridge:
         formatted = self.bridge.format_context(long_memories, max_tokens=10)
         assert len(formatted) < 2000
 
-    def test_get_stats(self):
-        stats = self.bridge.get_stats()
-        assert "backend" in stats
-        assert True  # stats vary by backend
+    def test_format_context_empty(self):
+        """Cover format_context with empty list (line 216)."""
+        result = self.bridge.format_context([])
+        assert result == ""
+
+    def test_fallback_path_store_and_retrieve(self, monkeypatch):
+        """Cover fallback path when HAS_CLAW_MEM is False."""
+        monkeypatch.setattr(
+            "claw_cog.integration.claw_mem_bridge.HAS_CLAW_MEM", False
+        )
+        bridge = ClawMemBridge(self.config)
+        assert bridge.is_available() is False
+        # Store and retrieve through fallback
+        bridge.store("reflection", "fallback memory")
+        results = bridge.retrieve_relevant("fallback")
+        assert len(results) > 0
+        # Retrieve recent with fallback
+        recent = bridge.retrieve_recent(limit=1)
+        assert isinstance(recent, list)
+
+    def test_retrieve_recent_fallback(self, monkeypatch):
+        """Cover retrieve_recent fallback path."""
+        monkeypatch.setattr(
+            "claw_cog.integration.claw_mem_bridge.HAS_CLAW_MEM", False
+        )
+        bridge = ClawMemBridge(self.config)
+        bridge.store("goal", "test goal")
+        recent = bridge.retrieve_recent(memory_type="goal", limit=5)
+        assert isinstance(recent, list)

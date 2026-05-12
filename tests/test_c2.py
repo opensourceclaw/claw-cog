@@ -95,3 +95,15 @@ class TestC2Metacognitive:
             r = self.c2.monitor(DummyC1Result(confidence=conf))
             types_seen.add(r.adjustment_type)
         assert len(types_seen) >= 3  # at least 3 different types
+
+    def test_competence_non_str_nor_dict(self):
+        """Cover assess_competence with non-str, non-dict input (line 126)."""
+        assessment = self.c2.assess_competence(42, ["known1"])
+        assert assessment.novelty_score == 1.0
+
+    def test_confidence_adjustment_type(self):
+        """confidence=0.35 should produce 'confidence' adjustment type."""
+        result = self.c2.monitor(DummyC1Result(confidence=0.35))
+        assert result.adjustment_type == "confidence"
+        assert result.needs_adjustment is True
+        assert result.recommendation == "increase_confidence"

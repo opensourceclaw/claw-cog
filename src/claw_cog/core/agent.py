@@ -11,6 +11,7 @@ from enum import Enum
 import logging
 
 from claw_cog.config.defaults import Config
+from claw_cog.exceptions import ConfigurationError
 from claw_cog.core.workspace import GlobalWorkspace, C1Result
 from claw_cog.core.layers import LayerManager
 from claw_cog.layers.c0_unconscious import C0Result
@@ -110,6 +111,11 @@ class ConsciousAgent:
         Returns:
             ProcessingResult: Processing result with confidence and level
         """
+        if not 0.0 <= confidence_threshold <= 1.0:
+            raise ConfigurationError(
+                f"confidence_threshold must be 0.0–1.0, got {confidence_threshold}"
+            )
+
         # 0. Retrieve relevant memories for context
         memories = self.memory.retrieve_relevant(
             query=str(input),

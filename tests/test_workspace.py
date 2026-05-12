@@ -110,3 +110,47 @@ def test_workspace_clear_history():
 
     workspace.clear_history()
     assert len(workspace._broadcast_history) == 0
+
+
+def test_broadcast_subscriber_error():
+    """Cover subscriber error handling in _broadcast (lines 190-192)."""
+    config = Config()
+    workspace = GlobalWorkspace(config)
+
+    def error_module(content):
+        raise ValueError("intentional error")
+
+    workspace.subscribe(error_module)
+    result = workspace.process("test input", None, None)
+
+    assert result is not None
+    assert isinstance(result, C1Result)
+
+
+def test_ego_output_integration():
+    """Cover ego_output integration in _integrate (lines 164-165)."""
+    config = Config()
+    workspace = GlobalWorkspace(config)
+    result = workspace.process(
+        input="test",
+        c0_output="c0 result",
+        context={"ego_output": "ego decision", "ego_confidence": 0.7},
+    )
+    assert result is not None
+    assert isinstance(result, C1Result)
+
+
+def test_unsubscribe_non_subscriber():
+    """Test unsubscribing a module that is not subscribed."""
+    config = Config()
+    workspace = GlobalWorkspace(config)
+
+    def dummy(content):
+        return content
+
+    # Should not raise error
+    workspace.unsubscribe(dummy)
+    assert len(workspace._subscribers) == 0
+    workspace.subscribe(dummy)
+    workspace.unsubscribe(dummy)
+    assert len(workspace._subscribers) == 0

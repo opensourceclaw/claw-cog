@@ -9,6 +9,8 @@ from typing import Any, Dict, List, Optional
 from dataclasses import dataclass
 import logging
 
+from claw_cog.config.defaults import Config
+
 logger = logging.getLogger(__name__)
 
 # Try to import numpy, but provide fallback
@@ -47,7 +49,7 @@ class MetacognitiveAssessment:
     M-ratio → 1.0 indicates optimal metacognition.
     """
 
-    def __init__(self, config: Any):
+    def __init__(self, config: Config):
         """Initialize assessment."""
         self.config = config
 

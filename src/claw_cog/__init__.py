@@ -25,8 +25,15 @@ from claw_cog.core.agent import ConsciousAgent, ConsciousnessLevel, ProcessingRe
 from claw_cog.core.workspace import GlobalWorkspace
 from claw_cog.core.layers import LayerManager
 from claw_cog.config.defaults import Config
+from claw_cog.exceptions import (
+    ClawCogError,
+    ConfigurationError,
+    LayerError,
+    WorkspaceError,
+    AssessmentError,
+)
 
-__version__ = "1.0.0a2"
+__version__ = "1.0.0a3"
 __all__ = [
     "ConsciousAgent",
     "ConsciousnessLevel",
@@ -34,4 +41,9 @@ __all__ = [
     "GlobalWorkspace",
     "LayerManager",
     "Config",
+    "ClawCogError",
+    "ConfigurationError",
+    "LayerError",
+    "WorkspaceError",
+    "AssessmentError",
 ]

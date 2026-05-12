@@ -1,7 +1,9 @@
 """Configuration defaults for claw-cog."""
 
 from dataclasses import dataclass, field
-from typing import Any, Dict
+from typing import Dict
+
+from claw_cog.exceptions import ConfigurationError
 
 
 @dataclass
@@ -41,6 +43,10 @@ class Config:
     @classmethod
     def from_dict(cls, config_dict: Dict[str, Any]) -> "Config":
         """Create config from dictionary."""
+        if not isinstance(config_dict, dict):
+            raise ConfigurationError(
+                f"Expected a dict, got {type(config_dict).__name__}"
+            )
         return cls(**{k: v for k, v in config_dict.items() if hasattr(cls, k)})
 
     def to_dict(self) -> Dict[str, Any]:

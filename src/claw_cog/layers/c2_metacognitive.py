@@ -5,9 +5,14 @@ Self-monitoring, goal tracking, confidence assessment.
 Based on Freud's Superego and Husserl's Protention.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from dataclasses import dataclass, field
 import logging
+
+from claw_cog.config.defaults import Config
+
+if TYPE_CHECKING:
+    from claw_cog.core.workspace import C1Result
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +49,7 @@ class C2Metacognitive:
     - Prediction generation (Protention)
     """
 
-    def __init__(self, config: Any):
+    def __init__(self, config: Config):
         self.config = config
         self._active = True
         self._confidence_thresholds = {
@@ -58,7 +63,7 @@ class C2Metacognitive:
         }
         logger.debug("C2Metacognitive layer initialized")
 
-    def monitor(self, c1_result: Any, confidence_threshold: float = 0.7) -> C2Result:
+    def monitor(self, c1_result: "C1Result", confidence_threshold: float = 0.7) -> C2Result:
         """Monitor C1 processing result and recommend adjustments."""
         self._monitor_count += 1
         confidence = getattr(c1_result, "confidence", 0.5)

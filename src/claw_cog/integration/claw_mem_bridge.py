@@ -7,6 +7,8 @@ Provides memory storage and retrieval for consciousness modules.
 from typing import Any, Dict, List, Optional
 import logging
 
+from claw_cog.config.defaults import Config
+
 logger = logging.getLogger(__name__)
 
 # Try to import claw-mem
@@ -33,7 +35,7 @@ class ClawMemBridge:
         >>> context = bridge.retrieve_relevant("careful")
     """
 
-    def __init__(self, config: Any):
+    def __init__(self, config: Config):
         """
         Initialize claw-mem bridge.
 
