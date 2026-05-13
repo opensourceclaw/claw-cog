@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0rc1] - 2026-05-13
+
+### Notice
+⚠️ **API Freeze**: From this release onward, no breaking changes will be made before v1.0.0.
+
+### Added
+- API stability commitment
+- Semantic versioning guarantee
+
+### Changed
+- Version: beta.3 → release candidate.1
+
 ## [1.0.0b3] - 2026-05-13
 
 ### Added
