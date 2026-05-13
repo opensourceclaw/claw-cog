@@ -22,7 +22,7 @@ def test_workspace_subscribe():
 
     workspace.subscribe(dummy_module)
     metrics = workspace.get_metrics()
-    assert metrics["subscriber_count"] == 1
+    assert metrics["subscriber_count"] == 2  # 1 default + 1 new
 
 
 def test_workspace_max_subscribers():
@@ -148,9 +148,9 @@ def test_unsubscribe_non_subscriber():
     def dummy(content):
         return content
 
-    # Should not raise error
+    # Should not raise error (1 default subscriber remains)
     workspace.unsubscribe(dummy)
-    assert len(workspace._subscribers) == 0
+    assert len(workspace._subscribers) == 1
     workspace.subscribe(dummy)
     workspace.unsubscribe(dummy)
-    assert len(workspace._subscribers) == 0
+    assert len(workspace._subscribers) == 1

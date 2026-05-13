@@ -69,6 +69,17 @@ class GlobalWorkspace:
         self._avg_broadcast_time_ms: float = 0.0
         self._total_broadcasts: int = 0
 
+        # Add default subscriber for baseline confidence
+        self._add_default_subscribers()
+
+    def _add_default_subscribers(self) -> None:
+        """Add default subscriber to ensure confidence > 0 per GWT."""
+        def _gwt_baseline(content: Any) -> Dict[str, Any]:
+            return {"received": True, "content_type": type(content).__name__}
+
+        self._subscribers.append(_gwt_baseline)
+        logger.debug("Default GWT subscriber added")
+
     def subscribe(self, module: Subscriber) -> None:
         """
         Subscribe a module to workspace broadcasts.
@@ -166,6 +177,11 @@ class GlobalWorkspace:
             if "ego_output" in context:
                 ego_conf = context.get("ego_confidence", 0.7)
                 sources["ego"] = (context["ego_output"], ego_conf)
+
+        # Save integration confidence for downstream use
+        if context is not None:
+            confidences = [w for _, w in sources.values()]
+            context["integration_confidence"] = max(confidences) if confidences else 0.3
 
         # Weighted integration
         if len(sources) == 1:

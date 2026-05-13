@@ -20,6 +20,14 @@ except ImportError:
     logger.warning("claw-mem not available, using in-memory fallback")
 
 
+MEMORY_TYPE_MAP = {
+    "reflection": "episodic",
+    "experience": "episodic",
+    "goal": "semantic",
+    "pattern": "procedural",
+}
+
+
 class ClawMemBridge:
     """
     Bridge between claw-cog and claw-mem.
@@ -74,24 +82,40 @@ class ClawMemBridge:
         Returns:
             bool: Success status
         """
+        # Map claw-cog types to claw-mem supported types
+        mapped_type = MEMORY_TYPE_MAP.get(memory_type, memory_type)
+
+        valid_types = {"episodic", "semantic", "procedural", "critical_rule"}
+        if mapped_type not in valid_types:
+            logger.warning(
+                f"Unknown memory type: {memory_type}, falling back to episodic"
+            )
+            mapped_type = "episodic"
+
         try:
             if HAS_CLAW_MEM:
                 self._memory.store(
                     content=str(content),
-                    memory_type=memory_type,
-                    metadata=metadata or {},
+                    memory_type=mapped_type,
+                    metadata={
+                        "original_type": memory_type,
+                        **(metadata or {}),
+                    },
                 )
             else:
                 # Fallback storage
-                if memory_type not in self._memory_fallback:
-                    self._memory_fallback[memory_type] = []
+                if mapped_type not in self._memory_fallback:
+                    self._memory_fallback[mapped_type] = []
 
-                self._memory_fallback[memory_type].append({
+                self._memory_fallback[mapped_type].append({
                     "content": content,
-                    "metadata": metadata or {},
+                    "metadata": {
+                        "original_type": memory_type,
+                        **(metadata or {}),
+                    },
                 })
 
-            logger.debug(f"Stored {memory_type}: {str(content)[:50]}...")
+            logger.debug(f"Stored {memory_type} (as {mapped_type}): {str(content)[:50]}...")
             return True
 
         except Exception as e:

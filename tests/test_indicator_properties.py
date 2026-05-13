@@ -205,16 +205,16 @@ class TestASTAttention:
         def sub2(content):
             return content
 
-        assert self.ws.get_metrics()["subscriber_count"] == 0
+        assert self.ws.get_metrics()["subscriber_count"] == 1  # default subscriber
 
         self.ws.subscribe(sub1)
-        assert self.ws.get_metrics()["subscriber_count"] == 1
-
-        self.ws.subscribe(sub2)
         assert self.ws.get_metrics()["subscriber_count"] == 2
 
+        self.ws.subscribe(sub2)
+        assert self.ws.get_metrics()["subscriber_count"] == 3
+
         self.ws.unsubscribe(sub1)
-        assert self.ws.get_metrics()["subscriber_count"] == 1
+        assert self.ws.get_metrics()["subscriber_count"] == 2
 
     def test_broadcast_reaches_subscribers(self):
         """Broadcast content reaches all subscribed handlers."""
