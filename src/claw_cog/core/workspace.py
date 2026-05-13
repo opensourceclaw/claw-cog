@@ -69,6 +69,14 @@ class GlobalWorkspace:
         self._avg_broadcast_time_ms: float = 0.0
         self._total_broadcasts: int = 0
 
+        # rc.2: Batch broadcast optimization
+        self._batch_queue: List[Any] = []
+        self._batch_size: int = 5
+
+        # rc.2: Content cache for hot-broadcast optimization
+        self._content_cache: Dict[str, Any] = {}
+        self._cache_max_size: int = 16
+
         # Add default subscriber for baseline confidence
         self._add_default_subscribers()
 
@@ -202,6 +210,11 @@ class GlobalWorkspace:
         Returns:
             Dict mapping subscriber names to their results
         """
+        # rc.2: Check cache for hot content
+        cache_key = str(content)[:100]
+        if cache_key in self._content_cache:
+            return self._content_cache[cache_key]
+
         results: Dict[str, Any] = {}
         for i, subscriber in enumerate(self._subscribers):
             try:
@@ -209,7 +222,34 @@ class GlobalWorkspace:
             except Exception as e:
                 logger.error(f"Subscriber {i} error: {e}")
                 results[f"module_{i}"] = {"error": str(e)}
+
+        # rc.2: Cache result (LRU eviction)
+        if len(self._content_cache) >= self._cache_max_size:
+            oldest = next(iter(self._content_cache))
+            del self._content_cache[oldest]
+        self._content_cache[cache_key] = results
+
         return results
+
+    def _flush_batch(self) -> List[Dict[str, Any]]:
+        """rc.2: Flush batched content to subscribers as a single broadcast."""
+        if not self._batch_queue:
+            return []
+
+        combined = {
+            "type": "batch",
+            "count": len(self._batch_queue),
+            "items": list(self._batch_queue),
+        }
+        result = self._broadcast(combined)
+        self._batch_queue.clear()
+        return [result]
+
+    def batch_broadcast(self, content: Any) -> None:
+        """rc.2: Queue content for batch broadcast."""
+        self._batch_queue.append(content)
+        if len(self._batch_queue) >= self._batch_size:
+            self._flush_batch()
 
     def _compute_integration_score(self, broadcast_result: Dict[str, Any]) -> float:
         """Compute integration score based on broadcast success."""

@@ -26,7 +26,7 @@ class TestRPTFeedbackLoops:
     def test_feedback_loop_exists(self):
         """RPT indicator reports True."""
         indicators = self.agent.get_indicator_properties()
-        assert indicators["RPT"] is True
+        assert indicators["RPT"]["feedback_loops"] is True
 
     def test_layer_loop_processing(self):
         """Processing pipeline traverses C0→C1→C2, carrying layer info."""
@@ -80,8 +80,8 @@ class TestRPTFeedbackLoops:
         agent_no_c2 = ConsciousAgent(enable_c2=False)
         indicators = agent_no_c2.get_indicator_properties()
 
-        assert indicators["HOT"] is False
-        assert indicators["RPT"] is True  # RPT is independent of C2 toggle
+        assert indicators["HOT"]["higher_order_representation"] is False
+        assert indicators["RPT"]["feedback_loops"] is True
 
 
 # ──────────────────────────────────────────────
@@ -100,13 +100,13 @@ class TestHOTMetacognition:
     def test_c2_enabled_returns_hot_true(self):
         """Default agent (C2 enabled) reports HOT=True."""
         indicators = self.agent.get_indicator_properties()
-        assert indicators["HOT"] is True
+        assert indicators["HOT"]["higher_order_representation"] is True
 
     def test_c2_disabled_returns_hot_false(self):
         """Agent with C2 disabled reports HOT=False."""
         agent = ConsciousAgent(enable_c2=False)
         indicators = agent.get_indicator_properties()
-        assert indicators["HOT"] is False
+        assert indicators["HOT"]["higher_order_representation"] is False
 
     def test_metacognitive_monitoring(self):
         """C2 responds differently across the full confidence spectrum."""
@@ -171,10 +171,10 @@ class TestHOTMetacognition:
     def test_hot_indicator_via_agent(self):
         """HOT indicator reflects C2 status."""
         default_agent = ConsciousAgent()
-        assert default_agent.get_indicator_properties()["HOT"] is True
+        assert default_agent.get_indicator_properties()["HOT"]["higher_order_representation"] is True
 
         no_c2_agent = ConsciousAgent(enable_c2=False)
-        assert no_c2_agent.get_indicator_properties()["HOT"] is False
+        assert no_c2_agent.get_indicator_properties()["HOT"]["higher_order_representation"] is False
 
 
 # ──────────────────────────────────────────────
@@ -194,7 +194,7 @@ class TestASTAttention:
         """AST indicator reports True."""
         agent = ConsciousAgent()
         indicators = agent.get_indicator_properties()
-        assert indicators["AST"] is True
+        assert indicators["AST"]["attention_schema"] is True
 
     def test_subscriber_count_management(self):
         """Subscriber count is tracked correctly."""

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0rc2] - 2026-05-13
+
+### Added
+- Batch broadcast optimization in GlobalWorkspace
+- Content cache for hot-broadcast reuse
+- C2 sampling rate and TTL caching for monitoring performance
+- Enhanced indicator properties with sub-property dicts (RPT/HOT/AST)
+- `get_indicator_scores()` for numeric coverage percentages
+- docs/INDICATORS.md — detailed indicator property reference
+
+### Changed
+- `get_indicator_properties()`: RPT/HOT/AST now return sub-property dicts
+- QUICK_START.md updated with rc.2 indicator examples
+
 ## [1.0.0rc1] - 2026-05-13
 
 ### Notice

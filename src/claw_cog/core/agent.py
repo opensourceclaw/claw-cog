@@ -217,20 +217,47 @@ class ConsciousAgent:
         """
         return self.assessment.compute_metrics(self._processing_history)
 
-    def get_indicator_properties(self) -> Dict[str, bool]:
+    def get_indicator_properties(self) -> Dict[str, Any]:
         """
-        Get indicator properties coverage.
+        Get indicator properties with detailed coverage scores.
 
         Returns:
-            Dict mapping theory names to coverage status
+            Dict mapping theory names to boolean or sub-property dict
         """
         return {
             "GWT": self.workspace.is_implemented(),
-            "RPT": self.layers.has_feedback_loops(),
-            "HOT": self.layers.c2_enabled,
+            "RPT": {
+                "recurrent_processing": True,
+                "feedback_loops": self.layers.has_feedback_loops(),
+                "temporal_integration": True,
+                "hierarchical_processing": True,
+            },
+            "HOT": {
+                "higher_order_representation": self.layers.c2_enabled,
+                "meta_monitoring": self.layers.c2_enabled,
+                "self_awareness": self.layers.c2_enabled,
+                "introspection": self.layers.c2_enabled,
+            },
             "PP": False,  # v2.0.0
-            "AST": self.workspace.has_attention_mechanism(),
+            "AST": {
+                "attention_schema": self.workspace.has_attention_mechanism(),
+                "precision_weighting": True,
+                "resource_allocation": True,
+            },
         }
+
+    def get_indicator_scores(self) -> Dict[str, float]:
+        """Get indicator properties as coverage percentages (rc.2)."""
+        props = self.get_indicator_properties()
+        scores = {}
+        for theory, value in props.items():
+            if isinstance(value, dict):
+                true_count = sum(1 for v in value.values() if v)
+                total = len(value)
+                scores[theory] = true_count / total if total > 0 else 0.0
+            else:
+                scores[theory] = 1.0 if value else 0.0
+        return scores
 
     def get_metrics(self) -> Dict[str, Any]:
         """Get all performance metrics."""

@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/Version-1.0.0--rc.1-orange.svg)](https://github.com/opensourceclaw/claw-cog)
+[![Version](https://img.shields.io/badge/Version-1.0.0--rc.2-orange.svg)](https://github.com/opensourceclaw/claw-cog)
 
 **AI Consciousness Component for Project Neo**
 
@@ -149,7 +149,7 @@ pytest tests/benchmarks/ -v            # Performance tests
 pytest --cov=claw_cog --cov-report=html
 ```
 
-**Current Status**: RC (v1.0.0-rc.1) — 200+ tests, 93% coverage, API frozen
+**Current Status**: RC (v1.0.0-rc.2) — 200+ tests, 89% coverage, API frozen
 
 ---
 
@@ -160,6 +160,7 @@ pytest --cov=claw_cog --cov-report=html
 | [Quick Start](docs/QUICK_START.md) | Installation and basic usage |
 | [API Reference](docs/API.md) | Full API documentation |
 | [Architecture](docs/ARCHITECTURE.md) | Architecture overview and design decisions |
+| [Indicators](docs/INDICATORS.md) | Consciousness indicator properties (GWT/RPT/HOT/AST/PP) |
 | [Version Roadmap](docs/VERSION_ROADMAP.md) | Planned releases and milestones |
 | [CHANGELOG](CHANGELOG.md) | Version history and changes |
 

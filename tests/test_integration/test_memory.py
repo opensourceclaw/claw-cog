@@ -98,7 +98,7 @@ def test_indicator_properties_after_processing():
     # v1.0.0: GWT should be implemented
     assert indicators["GWT"] is True
     # C2 enabled by default
-    assert indicators["HOT"] is True
+    assert indicators["HOT"]["higher_order_representation"] is True
     # PP in v2.0.0
     assert indicators["PP"] is False
 

@@ -66,11 +66,31 @@ class C2Metacognitive:
             "none": 0, "strategy": 0, "confidence": 0, "seek_help": 0
         }
         self._recent_confidences: List[float] = []
+        # rc.2: Sampling and caching for performance
+        self._monitor_sample_rate: float = 1.0
+        self._cached_result: Optional["C2Result"] = None
+        self._cache_ttl: int = 0
+        self._cache_counter: int = 0
         logger.debug("C2Metacognitive layer initialized")
 
     def monitor(self, c1_result: "C1Result", confidence_threshold: float = 0.7) -> C2Result:
         """Monitor C1 processing result and recommend adjustments."""
         self._monitor_count += 1
+
+        # rc.2: Sampling optimization — skip full computation if sampling
+        if self._monitor_sample_rate < 1.0:
+            import random
+            if random.random() > self._monitor_sample_rate:
+                if self._cached_result is not None:
+                    return self._cached_result
+
+        # rc.2: Cache TTL — return cached result if within TTL
+        if self._cache_ttl > 0 and self._cached_result is not None:
+            if self._cache_counter < self._cache_ttl:
+                self._cache_counter += 1
+                return self._cached_result
+            self._cache_counter = 0
+
         confidence = getattr(c1_result, "confidence", 0.5)
 
         if confidence >= self._confidence_thresholds["high"]:
@@ -98,7 +118,7 @@ class C2Metacognitive:
         learning = self._generate_learning_signal(confidence, trend)
         attention = 1.0 - abs(confidence - 0.5) * 2  # highest at 0.5
 
-        return C2Result(
+        result = C2Result(
             needs_adjustment=(adj != "none"),
             adjustment_type=adj,
             confidence_estimate=confidence,
@@ -113,6 +133,10 @@ class C2Metacognitive:
                 "threshold_low": self._confidence_thresholds["low"],
             },
         )
+
+        # rc.2: Cache full result for TTL/sampling reuse
+        self._cached_result = result
+        return result
 
     def assess_competence(
         self, situation: Any, known_situations: Optional[List[Any]] = None

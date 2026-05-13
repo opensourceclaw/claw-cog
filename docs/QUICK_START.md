@@ -44,7 +44,12 @@ claw-cog tracks five consciousness indicators from the science of consciousness:
 ```python
 indicators = agent.get_indicator_properties()
 print(indicators)
-# {'GWT': True, 'RPT': True, 'HOT': True, 'PP': False, 'AST': True}
+# rc.2: RPT/HOT/AST now include sub-properties
+# {'GWT': True, 'RPT': {'feedback_loops': True, ...}, 'HOT': {...}, 'PP': False, 'AST': {...}}
+
+# Get numeric coverage scores
+scores = agent.get_indicator_scores()
+# {'GWT': 1.0, 'RPT': 1.0, 'HOT': 1.0, 'PP': 0.0, 'AST': 1.0}
 ```
 
 | Key | Theory | Meaning |

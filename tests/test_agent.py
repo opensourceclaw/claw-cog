@@ -57,12 +57,12 @@ def test_get_indicator_properties():
     assert "PP" in indicators
     assert "AST" in indicators
 
-    # v1.0.0 coverage
-    assert indicators["GWT"] is True  # GlobalWorkspace implemented
-    assert indicators["RPT"] is True  # Feedback loops exist
-    assert indicators["HOT"] is True  # C2 enabled by default
-    assert indicators["PP"] is False  # Not in v1.0.0
-    assert indicators["AST"] is True  # Basic attention
+    # v1.0.0 coverage (rc.2: RPT/HOT/AST now return sub-property dicts)
+    assert indicators["GWT"] is True
+    assert indicators["RPT"]["feedback_loops"] is True
+    assert indicators["HOT"]["higher_order_representation"] is True
+    assert indicators["PP"] is False
+    assert indicators["AST"]["attention_schema"] is True
 
 
 def test_get_metrics():
