@@ -33,7 +33,7 @@ from claw_cog.exceptions import (
     AssessmentError,
 )
 
-__version__ = "1.0.0b1"
+__version__ = "1.0.0b2"
 __all__ = [
     "ConsciousAgent",
     "ConsciousnessLevel",
