@@ -26,6 +26,10 @@ class C2Result:
     confidence_estimate: float
     recommendation: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
+    # v1.0.0b3: enhanced monitoring fields
+    performance_trend: str = "stable"
+    learning_signal: float = 0.0
+    attention_score: float = 0.5
 
 
 @dataclass
@@ -61,6 +65,7 @@ class C2Metacognitive:
         self._adjustment_counts: Dict[str, int] = {
             "none": 0, "strategy": 0, "confidence": 0, "seek_help": 0
         }
+        self._recent_confidences: List[float] = []
         logger.debug("C2Metacognitive layer initialized")
 
     def monitor(self, c1_result: "C1Result", confidence_threshold: float = 0.7) -> C2Result:
@@ -82,11 +87,25 @@ class C2Metacognitive:
             rec = "request_human_assistance"
 
         self._adjustment_counts[adj] += 1
+
+        # Track confidences for trend analysis
+        self._recent_confidences.append(confidence)
+        if len(self._recent_confidences) > 10:
+            self._recent_confidences.pop(0)
+
+        # Enhanced monitoring
+        trend = self._analyze_trend()
+        learning = self._generate_learning_signal(confidence, trend)
+        attention = 1.0 - abs(confidence - 0.5) * 2  # highest at 0.5
+
         return C2Result(
             needs_adjustment=(adj != "none"),
             adjustment_type=adj,
             confidence_estimate=confidence,
             recommendation=rec,
+            performance_trend=trend,
+            learning_signal=learning,
+            attention_score=attention,
             metadata={
                 "monitor_index": self._monitor_count,
                 "threshold_high": self._confidence_thresholds["high"],
@@ -158,6 +177,28 @@ class C2Metacognitive:
             recommendation=recommendation,
         )
 
+    def _analyze_trend(self) -> str:
+        """Analyze confidence trend from recent processing."""
+        if len(self._recent_confidences) < 3:
+            return "stable"
+
+        recent = self._recent_confidences[-3:]
+        if recent[-1] > recent[0] + 0.1:
+            return "improving"
+        elif recent[-1] < recent[0] - 0.1:
+            return "declining"
+        return "stable"
+
+    def _generate_learning_signal(self, confidence: float, trend: str) -> float:
+        """Generate learning signal based on confidence and trend."""
+        base_signal = confidence - 0.5
+
+        if trend == "improving":
+            return base_signal + 0.2
+        elif trend == "declining":
+            return base_signal - 0.2
+        return base_signal
+
     def get_monitor_stats(self) -> Dict[str, Any]:
         """Get monitoring statistics."""
         return {
@@ -174,3 +215,4 @@ class C2Metacognitive:
     def reset(self) -> None:
         self._monitor_count = 0
         self._adjustment_counts = {k: 0 for k in self._adjustment_counts}
+        self._recent_confidences.clear()

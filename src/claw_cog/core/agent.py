@@ -240,6 +240,46 @@ class ConsciousAgent:
             "history_size": len(self._processing_history),
         }
 
+    def generate_calibration_data(self, n_samples: int = 20) -> None:
+        """Generate calibration data for meta-d' calculation.
+
+        Injects synthetic ProcessingResult entries with varying confidences
+        to bootstrap the metacognitive assessment. Uses both high-confidence
+        (correct) and low-confidence (incorrect) trials.
+        """
+        import random
+        random.seed(42)
+
+        for i in range(n_samples):
+            # Generate varying confidence: mix of high (correct) and low (incorrect)
+            is_correct = i % 3 != 0  # ~67% correct
+            if is_correct:
+                confidence = random.uniform(0.6, 0.95)
+            else:
+                confidence = random.uniform(0.1, 0.45)
+
+            result = ProcessingResult(
+                output=f"calibration_{i}",
+                confidence=confidence,
+                level=self._determine_level_from_confidence(confidence),
+                metadata={"calibration": True},
+            )
+            self._processing_history.append(result)
+
+        # Trim to history limit
+        while len(self._processing_history) > self.config.assessment_history_size:
+            self._processing_history.pop(0)
+
+    def _determine_level_from_confidence(
+        self, confidence: float
+    ) -> "ConsciousnessLevel":
+        """Determine consciousness level from a confidence value."""
+        if confidence > 0.8:
+            return ConsciousnessLevel.C2_METACOGNITIVE
+        elif confidence > 0.5:
+            return ConsciousnessLevel.C1_CONSCIOUS_ACCESS
+        return ConsciousnessLevel.C0_UNCONSCIOUS
+
     def reset(self) -> None:
         """Reset agent state."""
         self._processing_history.clear()

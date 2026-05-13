@@ -29,7 +29,7 @@ class Config:
     c2_low_threshold: float = 0.3
 
     # Metacognitive assessment settings
-    assessment_min_samples: int = 10
+    assessment_min_samples: int = 5
     assessment_history_size: int = 1000
 
     # Memory settings
