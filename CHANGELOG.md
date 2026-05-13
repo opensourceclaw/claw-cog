@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [1.0.0b1] - 2026-05-13
+
+### Changed
+- Version bump: alpha.3 → beta.1
+- Mark as public beta release
+
+### Notes
+- Core functionality complete and stable
+- API frozen (no breaking changes before v1.0.0)
+- Ready for public testing
+
 ## [1.0.0a3] - 2026-05-13
 ### Added
 - Indicator properties test suite (RPT 5, HOT 6, AST 5 tests)
