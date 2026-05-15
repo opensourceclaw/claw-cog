@@ -1,0 +1,46 @@
+{
+  "name": "@opensourceclaw/openclaw-claw-cog",
+  "version": "1.0.0",
+  "description": "Claw Cog Consciousness System - GNWT-based OpenClaw Plugin with meta-d' monitoring",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node test/test_bridge.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.0"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.3.28"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "openclaw",
+    "plugin",
+    "consciousness",
+    "gnwt",
+    "meta-d-prime",
+    "metacognition",
+    "claw-cog"
+  ],
+  "author": "Peter Cheng",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opensourceclaw/claw-cog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/opensourceclaw/claw-cog/issues"
+  },
+  "homepage": "https://github.com/opensourceclaw/claw-cog#readme",
+  "openclaw": {
+    "extensions": [
+      "./dist/index.js"
+    ]
+  }
+}
