@@ -32,6 +32,12 @@ from claw_cog.exceptions import (
     WorkspaceError,
     AssessmentError,
 )
+# P1-1: Time Consciousness Enhancement (ITCMA)
+from claw_cog.modules import (
+    TemporalPerception, TemporalEvent, DurationEstimate, EventType,
+    TemporalUnderstanding, TemporalPattern, ScheduleEntry, DeadlineInfo, PatternType,
+    TemporalPrediction, PredictedEvent, TemporalConflict, ResolutionSuggestion, ConflictType,
+)
 
 __version__ = "1.0.0"
 __all__ = [
@@ -46,4 +52,19 @@ __all__ = [
     "LayerError",
     "WorkspaceError",
     "AssessmentError",
+    # P1-1 Temporal Consciousness
+    "TemporalPerception",
+    "TemporalEvent",
+    "DurationEstimate",
+    "EventType",
+    "TemporalUnderstanding",
+    "TemporalPattern",
+    "ScheduleEntry",
+    "DeadlineInfo",
+    "PatternType",
+    "TemporalPrediction",
+    "PredictedEvent",
+    "TemporalConflict",
+    "ResolutionSuggestion",
+    "ConflictType",
 ]
