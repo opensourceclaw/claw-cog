@@ -240,8 +240,9 @@ class TemporalPerception:
         return dict(self._stats)
 
     def clear_history(self):
-        """Clear event history."""
+        """Clear event history and reset statistics."""
         self._event_history.clear()
+        self._stats = {"events_detected": 0, "durations_estimated": 0}
 
     # ── Private ────────────────────────────────────────────────────────────────
 

@@ -2,10 +2,14 @@
 ClawMem Bridge - Integration with claw-mem memory system.
 
 Provides memory storage and retrieval for consciousness modules.
+v1.5.0: Added time-aware memory features (time decay, time-range search).
 """
 
 from typing import Any, Dict, List, Optional
 import logging
+import math
+import time
+from datetime import datetime, timedelta
 
 from claw_cog.config.defaults import Config
 
@@ -257,6 +261,154 @@ class ClawMemBridge:
             current_length += len(line)
 
         return "\n".join(lines)
+
+    # ── v1.5.0: Time-aware memory features ────────────────────────────────────
+
+    def apply_time_decay(
+        self,
+        timestamp: Optional[float],
+        decay_rate: Optional[float] = None,
+        reference_time: Optional[float] = None,
+    ) -> float:
+        """
+        Calculate time-decayed relevance weight for a memory.
+
+        Uses exponential decay: weight = exp(-decay_rate * age_days)
+        Fresher memories get higher weight.
+
+        Args:
+            timestamp: Unix timestamp of the memory (None = assume old)
+            decay_rate: Decay rate per day (default from config)
+            reference_time: Reference time (default: now)
+
+        Returns:
+            float: Decay weight between 0.0 and 1.0
+        """
+        if timestamp is None:
+            return 0.1
+
+        if decay_rate is None:
+            decay_rate = self.config.temporal_decay_rate
+
+        ref = reference_time or time.time()
+        age_seconds = max(0, ref - timestamp)
+        age_days = age_seconds / 86400.0
+
+        return math.exp(-decay_rate * age_days)
+
+    def search_by_time_range(
+        self,
+        start_time: datetime,
+        end_time: datetime,
+        memory_types: Optional[List[str]] = None,
+        limit: int = 50,
+    ) -> List[Dict]:
+        """
+        Search memories within a specific time range.
+
+        Args:
+            start_time: Start of the time range
+            end_time: End of the time range
+            memory_types: Types of memories to search (None = all)
+            limit: Maximum results
+
+        Returns:
+            List of memory dicts within the time range
+        """
+        try:
+            if HAS_CLAW_MEM:
+                results = self._memory.search(
+                    query="",
+                    limit=limit,
+                )
+                filtered = [
+                    {
+                        "content": r.get("text", ""),
+                        "type": r.get("memory_type", ""),
+                        "metadata": r.get("metadata", {}),
+                    }
+                    for r in results
+                    if start_time <= datetime.fromtimestamp(
+                        r.get("timestamp", 0)
+                    ) <= end_time
+                ]
+                return filtered[:limit]
+            else:
+                # Fallback: approximate by checking metadata timestamps
+                results = []
+                types = memory_types or list(self._memory_fallback.keys())
+                for mem_type in types:
+                    if mem_type not in self._memory_fallback:
+                        continue
+                    for entry in self._memory_fallback[mem_type]:
+                        ts = entry.get("metadata", {}).get("timestamp", 0)
+                        if ts:
+                            try:
+                                entry_time = datetime.fromtimestamp(ts)
+                                if start_time <= entry_time <= end_time:
+                                    results.append({
+                                        "content": entry.get("content", ""),
+                                        "type": mem_type,
+                                        "metadata": entry.get("metadata", {}),
+                                    })
+                            except (OSError, ValueError):
+                                continue
+                return results[:limit]
+
+        except Exception as e:
+            logger.error(f"Failed to search by time range: {e}")
+            return []
+
+    def store_with_temporal(
+        self,
+        memory_type: str,
+        content: Any,
+        metadata: Optional[Dict] = None,
+        timestamp: Optional[float] = None,
+    ) -> bool:
+        """
+        Store memory with temporal metadata (v1.5.0).
+
+        Attaches timestamp and temporal type info for time-aware retrieval.
+
+        Args:
+            memory_type: Type of memory
+            content: Memory content
+            metadata: Optional metadata
+            timestamp: Unix timestamp (default: now)
+
+        Returns:
+            bool: Success status
+        """
+        ts = timestamp or time.time()
+        enhanced_metadata = {
+            **(metadata or {}),
+            "timestamp": ts,
+            "iso_datetime": datetime.fromtimestamp(ts).isoformat(),
+        }
+        return self.store(memory_type, content, enhanced_metadata)
+
+    def get_temporal_stats(self) -> Dict:
+        """Get temporal statistics for stored memories."""
+        stats = {"total_memories": 0, "with_timestamps": 0, "oldest_ts": None, "newest_ts": None}
+
+        if HAS_CLAW_MEM:
+            stats["backend"] = "claw-mem"
+            stats["total_memories"] = "unknown (external backend)"
+        else:
+            stats["backend"] = "fallback"
+            for entries in self._memory_fallback.values():
+                for entry in entries:
+                    stats["total_memories"] += 1
+                    ts = entry.get("metadata", {}).get("timestamp")
+                    if ts:
+                        stats["with_timestamps"] += 1
+                        if stats["oldest_ts"] is None or ts < stats["oldest_ts"]:
+                            stats["oldest_ts"] = ts
+                        if stats["newest_ts"] is None or ts > stats["newest_ts"]:
+                            stats["newest_ts"] = ts
+
+        return stats
 
     def is_available(self) -> bool:
         """Check if claw-mem is available."""

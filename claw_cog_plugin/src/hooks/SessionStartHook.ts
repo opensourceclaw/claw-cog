@@ -56,8 +56,8 @@ export class SessionStartHook {
 
       // 5. Get temporal awareness state (P1)
       const temporal = await this.bridge.getTemporalState();
-      if (temporal) {
-        ctx.session?.metadata?.temporal = temporal;
+      if (temporal && ctx.session?.metadata) {
+        ctx.session.metadata.temporal = temporal;
       }
     } catch (err) {
       // Graceful degradation: session continues without consciousness injection

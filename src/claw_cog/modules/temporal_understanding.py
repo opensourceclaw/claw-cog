@@ -252,10 +252,11 @@ class TemporalUnderstanding:
         }
 
     def clear(self):
-        """Clear all stored data."""
+        """Clear all stored data and reset statistics."""
         self._event_store.clear()
         self._pattern_library.clear()
         self._deadlines.clear()
+        self._stats = {"patterns_recognized": 0, "schedules_inferred": 0}
 
     # ── Private ────────────────────────────────────────────────────────────────
 

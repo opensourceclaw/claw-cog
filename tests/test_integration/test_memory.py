@@ -99,8 +99,8 @@ def test_indicator_properties_after_processing():
     assert indicators["GWT"] is True
     # C2 enabled by default
     assert indicators["HOT"]["higher_order_representation"] is True
-    # PP in v2.0.0
-    assert indicators["PP"] is False
+    # v1.5.0: PP enabled via temporal integration
+    assert indicators["PP"] is True  # v1.5.0: temporal integrated
 
 
 def test_metacognition_with_ground_truth():

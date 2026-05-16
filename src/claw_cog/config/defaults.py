@@ -36,6 +36,13 @@ class Config:
     memory_backend: str = "claw-mem"
     memory_context_max_tokens: int = 4000
 
+    # Temporal consciousness settings (v1.5.0 ITCMA)
+    temporal_enabled: bool = True
+    temporal_horizon_days: int = 7
+    temporal_retention_capacity: int = 1000
+    temporal_decay_rate: float = 0.1
+    temporal_confidence_threshold: float = 0.5
+
     # Performance settings
     enable_profiling: bool = False
     log_level: str = "INFO"
@@ -66,6 +73,11 @@ class Config:
             "assessment_history_size": self.assessment_history_size,
             "memory_backend": self.memory_backend,
             "memory_context_max_tokens": self.memory_context_max_tokens,
+            "temporal_enabled": self.temporal_enabled,
+            "temporal_horizon_days": self.temporal_horizon_days,
+            "temporal_retention_capacity": self.temporal_retention_capacity,
+            "temporal_decay_rate": self.temporal_decay_rate,
+            "temporal_confidence_threshold": self.temporal_confidence_threshold,
             "enable_profiling": self.enable_profiling,
             "log_level": self.log_level,
         }

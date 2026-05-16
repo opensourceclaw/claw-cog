@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "claw-cog"
-version = "1.0.0"
+version = "1.5.0"
 description = "AI Consciousness Component for Project Neo - Based on Global Workspace Theory and C0-C1-C2 Framework"
 readme = "README.md"
 license = {text = "Apache-2.0"}

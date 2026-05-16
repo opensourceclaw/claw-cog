@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-05-16
+
+### Added
+- **ITCMA**: Integrated Temporal Consciousness Model Architecture
+- `ConsciousnessResultWithTime`: Extended result with temporal events, patterns, conflicts, and deadline alerts
+- `TemporalPerception` integration at C0 level (event detection from input streams)
+- `TemporalUnderstanding` integration at C1 level (pattern recognition, schedule inference, deadline awareness)
+- `TemporalPrediction` integration at C2 level (future event prediction, conflict detection, resolution suggestion)
+- Time-aware memory features in `ClawMemBridge`:
+  - `apply_time_decay()`: Exponential time-based relevance decay
+  - `search_by_time_range()`: Memory search within datetime ranges
+  - `store_with_temporal()`: Store memories with timestamp metadata
+  - `get_temporal_stats()`: Temporal memory statistics
+- Temporal configuration fields: `temporal_enabled`, `temporal_horizon_days`, `temporal_retention_capacity`, `temporal_decay_rate`, `temporal_confidence_threshold`
+- `enable_temporal` parameter on `ConsciousAgent.process()` for runtime toggle
+- Temporal metrics in `ConsciousAgent.get_metrics()`
+- Integration test suite (36 tests) covering full temporal pipeline
+
+### Changed
+- `ConsciousAgent.__init__`: Now initializes temporal modules by default
+- `ConsciousAgent.process()`: Returns `ConsciousnessResultWithTime` when temporal enabled
+- `ConsciousAgent.reset()`: Resets temporal module state
+- `ConsciousAgent.get_metrics()`: Includes temporal perception/understanding/prediction stats
+- `Config.to_dict()`: Includes temporal configuration fields
+- `ConsciousAgent.get_indicator_properties()`: PP indicator tied to `temporal_enabled`; RPT temporal_integration reflects config
+- `TemporalPerception.clear_history()`: Now resets statistics counters
+- `TemporalUnderstanding.clear()`: Now resets statistics counters
+- Version bumped from `1.0.0` to `1.5.0`
+
+### Fixed
+- `test_get_indicator_properties`: Updated to reflect PP=True (temporal integration)
+- `test_indicator_properties_after_processing`: Updated for v1.5.0 changes
+
 ## [1.0.0rc2] - 2026-05-13
 
 ### Added

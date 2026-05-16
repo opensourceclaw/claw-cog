@@ -57,11 +57,12 @@ def test_get_indicator_properties():
     assert "PP" in indicators
     assert "AST" in indicators
 
-    # v1.0.0 coverage (rc.2: RPT/HOT/AST now return sub-property dicts)
+    # v1.5.0: PP is True when temporal_enabled (default)
     assert indicators["GWT"] is True
     assert indicators["RPT"]["feedback_loops"] is True
+    assert indicators["RPT"]["temporal_integration"] is True  # v1.5.0
     assert indicators["HOT"]["higher_order_representation"] is True
-    assert indicators["PP"] is False
+    assert indicators["PP"] is True  # v1.5.0: temporal integration enabled
     assert indicators["AST"]["attention_schema"] is True
 
 

@@ -29,8 +29,9 @@ export class PostToolUseHook {
 
       // Update session metadata with new consciousness state
       if (analysis.consciousness && ctx.session?.metadata) {
-        ctx.session.metadata.consciousness = {
-          ...ctx.session.metadata.consciousness,
+        const metadata = ctx.session.metadata;
+        metadata.consciousness = {
+          ...metadata.consciousness,
           last_tool: ctx.tool?.name,
           last_confidence: analysis.consciousness.confidence,
           last_level: analysis.consciousness.level,
@@ -39,10 +40,10 @@ export class PostToolUseHook {
       }
 
       // Track metacognitive adjustments
-      if (analysis.metacognitive?.needs_adjustment) {
-        ctx.session?.metadata?.adjustments =
-          ctx.session?.metadata?.adjustments || [];
-        ctx.session.metadata.adjustments.push({
+      if (analysis.metacognitive?.needs_adjustment && ctx.session?.metadata) {
+        const metadata = ctx.session.metadata;
+        metadata.adjustments = metadata.adjustments || [];
+        metadata.adjustments.push({
           type: analysis.metacognitive.adjustment_type,
           recommendation: analysis.metacognitive.recommendation,
           tool: ctx.tool?.name,
