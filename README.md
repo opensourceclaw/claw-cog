@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/Version-1.0.0--rc.2-orange.svg)](https://github.com/opensourceclaw/claw-cog)
+[![Version](https://img.shields.io/badge/Version-1.5.0-blue.svg)](https://github.com/opensourceclaw/claw-cog)
 
 **AI Consciousness Component for Project Neo**
 
