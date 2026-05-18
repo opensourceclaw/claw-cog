@@ -153,30 +153,6 @@ pytest --cov=claw_cog --cov-report=html
 
 ---
 
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [Quick Start](docs/QUICK_START.md) | Installation and basic usage |
-| [API Reference](docs/API.md) | Full API documentation |
-| [Architecture](docs/ARCHITECTURE.md) | Architecture overview and design decisions |
-| [Indicators](docs/INDICATORS.md) | Consciousness indicator properties (GWT/RPT/HOT/AST/PP) |
-| [Version Roadmap](docs/VERSION_ROADMAP.md) | Planned releases and milestones |
-| [CHANGELOG](CHANGELOG.md) | Version history and changes |
-
----
-
-## Integration with Project Neo
-
-| Component | Role | Status |
-|-----------|------|--------|
-| **claw-mem** | Memory Layer | ✅ Production |
-| **claw-rl** | Learning Layer | ✅ Production |
-| **claw-cog** | Consciousness Layer | 🚧 Alpha |
-| **neoclaw** | Integration Layer | ✅ Active |
-
----
-
 ## License
 
 Apache License 2.0 — see [LICENSE](LICENSE) for details.
