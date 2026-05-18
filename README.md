@@ -6,7 +6,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
 [![Version](https://img.shields.io/badge/Version-1.5.0-blue.svg)](https://github.com/opensourceclaw/claw-cog)
 
-**AI Consciousness Component for Project Neo**
+**AI Consciousness Component for AI Agent**
 
 Global Workspace · C0-C1-C2 Architecture · Metacognitive Assessment
 
