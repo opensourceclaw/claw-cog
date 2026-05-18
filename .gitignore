@@ -48,7 +48,7 @@ htmlcov/
 dmypy.json
 
 # Documentation
-docs/_build/
+docs/
 
 # Distribution
 *.manifest
