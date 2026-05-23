@@ -5,9 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.0] - 2026-05-16
+## [3.0.0] - 2026-05-24
 
-### Added
+### Added - ETCLOVG Architecture (Autonomous Consciousness)
+- **Observation Layer (O)**: Anomaly detection, self monitoring
+  - `ObservationEngine`: Process inputs and detect anomalies
+  - `SelfMonitor`: Continuous self-assessment
+  - `AnomalyDetector`: Pattern-based anomaly detection
+  - `SeverityLevel`: Anomaly severity classification
+- **Volition Layer (V)**: Goal tracking, intention selection
+  - `VolitionEngine`: Manage goals and intentions
+  - `GoalTracker`: Track goal progress and status
+  - `IntentionBuffer`: Buffer and prioritize intentions
+  - `IntentionConflict`: Detect and resolve intention conflicts
+- **ETCLOVG Pipeline**: O → V → C2 → C1 → C0 processing flow
+- **Extended Result Type**: `ConsciousnessResultWithVO` with goals, observations, anomalies
+- **OpenClaw Plugin Bridge**: JSON-RPC interface for integration
+
+### Changed
+- Version bumped from 1.5.0 to 3.0.0 (MAJOR: autonomous consciousness architecture)
+- Architecture renamed to ETCLOVG (Extended Temporal Consciousness Layer)
+- ITCMA version reference updated to v2.0.0
+
+### Version Semantics Redefined
+- **v1.x**: Basic Consciousness (C0-C1-C2 + GWT)
+- **v2.x**: Temporal Consciousness (+ ITCMA) 
+- **v3.x**: Autonomous Consciousness (+ Volition + Observation)
+- **v4.x**: Perceptual Presence (+ PP, planned)
+
+## [2.0.0] - 2026-05-16 (Renamed from v1.5.0)
+
+### Added - ITCMA Architecture (Temporal Consciousness)
 - **ITCMA**: Integrated Temporal Consciousness Model Architecture
 - `ConsciousnessResultWithTime`: Extended result with temporal events, patterns, conflicts, and deadline alerts
 - `TemporalPerception` integration at C0 level (event detection from input streams)

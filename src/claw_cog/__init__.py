@@ -1,12 +1,12 @@
 """
-claw-cog v1.8.0: AI Consciousness Component for Project Neo
+claw-cog v3.0.0: AI Consciousness Component for Project Neo
 
 A computational consciousness framework based on:
 - Global Workspace Theory (GWT) - Baars, Dehaene
 - C0-C1-C2 Layered Architecture - Dehaene et al.
 - meta-d' Metacognitive Assessment - Maniscalco & Lau
-- ITCMA: Integrated Temporal Consciousness Model Architecture (v1.5.0) - Husserl
-- ETCLOVG: Extended Temporal Consciousness Layer with Observation, Volition, and Goal-tracking (v1.8.0)
+- ITCMA: Integrated Temporal Consciousness Model Architecture (v2.0.0) - Husserl
+- ETCLOVG: Extended Temporal Consciousness Layer with Observation, Volition, and Goal-tracking (v3.0.0)
 - Five Theory Indicator Properties - Butlin et al.
 
 Architecture:
@@ -58,7 +58,7 @@ from claw_cog.core.agent import (
     ConsciousnessResultWithTime, ConsciousnessResultWithVO,
 )
 
-__version__ = "1.8.0"
+__version__ = "3.0.0"
 __all__ = [
     "ConsciousAgent",
     "ConsciousnessLevel",
