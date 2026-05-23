@@ -5,6 +5,7 @@ Provides unified interface for AI consciousness capabilities
 based on GNWT and C0-C1-C2 architecture.
 
 v1.5.0: Integrated Temporal Consciousness (ITCMA).
+v1.8.0: Volition and Observation layers (ETCLOVG).
 """
 
 from typing import Any, Dict, List, Optional
@@ -25,6 +26,16 @@ from claw_cog.assessment.meta_d_prime import MetacognitiveAssessment
 from claw_cog.modules.temporal_perception import TemporalPerception, TemporalEvent
 from claw_cog.modules.temporal_understanding import TemporalUnderstanding, TemporalPattern
 from claw_cog.modules.temporal_prediction import TemporalPrediction, TemporalConflict, ResolutionSuggestion
+
+# v1.8.0: Volition and Observation layers
+from claw_cog.modules.volition.engine import VolitionEngine
+from claw_cog.modules.volition.goal_tracker import GoalTracker
+from claw_cog.modules.volition.intention_buffer import IntentionBuffer
+from claw_cog.modules.volition.types import Goal, Intention
+from claw_cog.modules.observation.engine import ObservationEngine
+from claw_cog.modules.observation.self_monitor import SelfMonitor
+from claw_cog.modules.observation.anomaly_detector import AnomalyDetector
+from claw_cog.modules.observation.types import Observation, Anomaly
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +74,21 @@ class ConsciousnessResultWithTime(ProcessingResult):
     deadline_alerts: List[str] = field(default_factory=list)
 
 
+@dataclass
+class ConsciousnessResultWithVO(ConsciousnessResultWithTime):
+    """
+    v1.8.0: Processing result enriched with Volition and Observation data.
+
+    Extends ConsciousnessResultWithTime with goals, active intention,
+    observations, and anomaly detection from the V/O layers (ETCLOVG).
+    """
+
+    goals: List[Goal] = field(default_factory=list)
+    active_intention: Optional[Intention] = None
+    observations: List[Observation] = field(default_factory=list)
+    anomalies: List[Anomaly] = field(default_factory=list)
+
+
 class ConsciousAgent:
     """
     Conscious Agent - AI consciousness component.
@@ -73,6 +99,8 @@ class ConsciousAgent:
     - meta-d' Metacognitive Assessment - Maniscalco & Lau
 
     Architecture:
+        O: Observation (Anomaly Detection, Self Monitoring)
+        V: Volition (Goal Tracking, Intention Selection)
         C2: Metacognitive (GoalTracking, Superego, Protention)
         C1: Conscious Access (Global Workspace, Memory, Ego)
         C0: Unconscious (Fast Patterns, Auto Responses)
@@ -114,6 +142,32 @@ class ConsciousAgent:
         self._temporal_understanding = TemporalUnderstanding()
         self._temporal_prediction = TemporalPrediction()
 
+        # v1.8.0: Volition layer (V)
+        self._goal_tracker = GoalTracker(max_goals=self.config.volition_max_goals)
+        self._intention_buffer = IntentionBuffer(
+            max_size=self.config.volition_intention_buffer_size
+        )
+        self._volition_engine = VolitionEngine(
+            goal_tracker=self._goal_tracker,
+            intention_buffer=self._intention_buffer,
+            memory=self.memory,
+        )
+
+        # v1.8.0: Observation layer (O)
+        self._self_monitor = SelfMonitor(
+            history_size=self.config.observation_history_size
+        )
+        self._anomaly_detector = AnomalyDetector(
+            low_threshold=self.config.observation_anomaly_low_threshold,
+            medium_threshold=self.config.observation_anomaly_medium_threshold,
+            high_threshold=self.config.observation_anomaly_high_threshold,
+        )
+        self._observation_engine = ObservationEngine(
+            monitor=self._self_monitor,
+            detector=self._anomaly_detector,
+            memory=self.memory,
+        )
+
         # State
         self._processing_history: List[ProcessingResult] = []
 
@@ -121,7 +175,9 @@ class ConsciousAgent:
             f"ConsciousAgent initialized: "
             f"C0 ✓, C1 ✓, C2 {'✓' if enable_c2 else '✗'}, "
             f"memory={memory_backend}, "
-            f"temporal={self.config.temporal_enabled}"
+            f"temporal={self.config.temporal_enabled}, "
+            f"volition={self.config.volition_enabled}, "
+            f"observation={self.config.observation_enabled}"
         )
 
     def process(
@@ -130,20 +186,23 @@ class ConsciousAgent:
         context: Optional[Dict] = None,
         confidence_threshold: float = 0.7,
         enable_temporal: Optional[bool] = None,
+        enable_vo: Optional[bool] = None,
     ) -> ProcessingResult:
         """
         Process input through consciousness layers.
 
         v1.5.0: Returns ConsciousnessResultWithTime when temporal is enabled.
+        v1.8.0: Returns ConsciousnessResultWithVO when V/O is enabled.
 
         Args:
             input: Input data
             context: Optional context information
             confidence_threshold: Confidence threshold for decisions
             enable_temporal: Override config temporal_enabled setting
+            enable_vo: Override config volition/observation enabled setting
 
         Returns:
-            ProcessingResult or ConsciousnessResultWithTime: Processing result
+            ProcessingResult, ConsciousnessResultWithTime, or ConsciousnessResultWithVO
         """
         if not 0.0 <= confidence_threshold <= 1.0:
             raise ConfigurationError(
@@ -152,6 +211,11 @@ class ConsciousAgent:
 
         # Determine if temporal processing is active
         use_temporal = enable_temporal if enable_temporal is not None else self.config.temporal_enabled
+
+        # Determine if V/O processing is active (v1.8.0)
+        use_vo = enable_vo if enable_vo is not None else (
+            self.config.volition_enabled or self.config.observation_enabled
+        )
 
         # Prepare input text for temporal analysis
         if isinstance(input, str):
@@ -243,8 +307,78 @@ class ConsciousAgent:
                             f"[{conflict.conflict_type.value.upper()}] {conflict.description}"
                         )
 
-        # 7. Build final result
-        if use_temporal:
+        # ── 7. V: Volition — Generate goals and select intention ───────────────
+        goals: List[Goal] = []
+        active_intention: Optional[Intention] = None
+        if use_vo and self.config.volition_enabled:
+            goals = self._volition_engine.generate_goals(
+                c2_result=c2_result,
+                context=context,
+            )
+            logger.debug(f"V: {len(goals)} goals generated")
+
+            if goals:
+                active_intention = self._volition_engine.select_intention(goals)
+                logger.debug(
+                    f"V: active intention={'selected' if active_intention else 'none'}"
+                )
+
+        # ── 8. O: Observation — Observe layer states and detect anomalies ──────
+        observations: List[Observation] = []
+        anomalies: List[Anomaly] = []
+        if use_vo and self.config.observation_enabled:
+            layer_states = {
+                "c0": {"confidence": c0_result.contribution},
+                "c1": {"confidence": c1_result.confidence},
+                "c2": {
+                    "confidence_estimate": c2_result.confidence_estimate if c2_result else 0.5,
+                    "learning_signal": c2_result.learning_signal if c2_result else 0.0,
+                    "attention_score": c2_result.attention_score if c2_result else 0.5,
+                },
+                "memory": {
+                    "context_confidence": context.get("memory_confidence", 0.3),
+                },
+                "volition": {
+                    "active_goal_count": len(self._goal_tracker.get_active()),
+                    "buffer_size": len(self._intention_buffer._buffer),
+                },
+            }
+            observations = self._observation_engine.observe(layer_states)
+            logger.debug(f"O: {len(observations)} observations made")
+
+            if observations:
+                anomalies = self._observation_engine.detect_anomalies(observations)
+                logger.debug(f"O: {len(anomalies)} anomalies detected")
+
+        # 9. Build final result
+        if use_vo:
+            result = ConsciousnessResultWithVO(
+                output=c1_result.output,
+                confidence=c1_result.confidence,
+                level=self._determine_level(c1_result),
+                metadata={
+                    "c0_contribution": c0_result.contribution,
+                    "c0_pattern": c0_result.pattern_matched,
+                    "c2_monitoring": c2_result.__dict__ if c2_result else None,
+                    "broadcast_time_ms": c1_result.broadcast_time_ms,
+                    "temporal_events_count": len(temporal_events),
+                    "temporal_patterns_count": len(temporal_patterns),
+                    "temporal_conflicts_count": len(temporal_conflicts),
+                    "vo_goals_count": len(goals),
+                    "vo_observations_count": len(observations),
+                    "vo_anomalies_count": len(anomalies),
+                },
+                temporal_events=temporal_events,
+                temporal_patterns=temporal_patterns,
+                temporal_conflicts=temporal_conflicts,
+                resolution_suggestions=resolution_suggestions,
+                deadline_alerts=deadline_alerts,
+                goals=goals,
+                active_intention=active_intention,
+                observations=observations,
+                anomalies=anomalies,
+            )
+        elif use_temporal:
             result = ConsciousnessResultWithTime(
                 output=c1_result.output,
                 confidence=c1_result.confidence,
@@ -277,12 +411,12 @@ class ConsciousAgent:
                 },
             )
 
-        # 8. Record history for metacognitive assessment
+        # 10. Record history for metacognitive assessment
         self._processing_history.append(result)
         if len(self._processing_history) > self.config.assessment_history_size:
             self._processing_history.pop(0)
 
-        # 9. Store reflection if C2 monitoring indicates learning
+        # 11. Store reflection if C2 monitoring indicates learning
         if c2_result and c2_result.needs_adjustment:
             self.memory.store(
                 memory_type="reflection",
@@ -290,7 +424,7 @@ class ConsciousAgent:
                 metadata={"confidence": c1_result.confidence},
             )
 
-        # 10. Store temporal events as memories (v1.5.0)
+        # 12. Store temporal events as memories (v1.5.0)
         if use_temporal and temporal_events:
             for event in temporal_events[:5]:  # Store top 5 events
                 self.memory.store(
@@ -361,6 +495,11 @@ class ConsciousAgent:
                 "introspection": self.layers.c2_enabled,
             },
             "PP": self.config.temporal_enabled,  # v1.5.0: Predictive Processing via temporal
+            "ETCLOVG": {
+                "volition": self.config.volition_enabled,
+                "observation": self.config.observation_enabled,
+                "temporal": self.config.temporal_enabled,
+            },
             "AST": {
                 "attention_schema": self.workspace.has_attention_mechanism(),
                 "precision_weighting": True,
@@ -382,7 +521,7 @@ class ConsciousAgent:
         return scores
 
     def get_metrics(self) -> Dict[str, Any]:
-        """Get all performance metrics including temporal stats (v1.5.0)."""
+        """Get all performance metrics including temporal, volition, and observation stats."""
         metrics = {
             "workspace": self.workspace.get_metrics(),
             "layers": self.layers.get_layer_status(),
@@ -394,6 +533,10 @@ class ConsciousAgent:
                 "understanding": self._temporal_understanding.get_statistics(),
                 "prediction": self._temporal_prediction.get_statistics(),
             }
+        if self.config.volition_enabled:
+            metrics["volition"] = self._volition_engine.get_statistics()
+        if self.config.observation_enabled:
+            metrics["observation"] = self._observation_engine.get_statistics()
         return metrics
 
     def generate_calibration_data(self, n_samples: int = 20) -> None:
@@ -437,10 +580,12 @@ class ConsciousAgent:
         return ConsciousnessLevel.C0_UNCONSCIOUS
 
     def reset(self) -> None:
-        """Reset agent state including temporal modules."""
+        """Reset agent state including temporal, volition, and observation modules."""
         self._processing_history.clear()
         self.layers.reset()
         self.workspace.clear_history()
         self._temporal_perception.clear_history()
         self._temporal_understanding.clear()
         self._temporal_prediction.clear()
+        self._volition_engine.clear()
+        self._observation_engine.clear()
