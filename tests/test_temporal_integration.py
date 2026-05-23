@@ -23,8 +23,8 @@ def agent():
 
 @pytest.fixture
 def agent_no_temporal():
-    """Create a ConsciousAgent with temporal disabled."""
-    config = Config(temporal_enabled=False)
+    """Create a ConsciousAgent with temporal and V/O disabled."""
+    config = Config(temporal_enabled=False, volition_enabled=False, observation_enabled=False)
     return ConsciousAgent(config=config)
 
 
@@ -60,9 +60,9 @@ class TestTemporalIntegration:
         assert isinstance(result, ConsciousnessResultWithTime)
 
     def test_process_override_disable_temporal(self, agent):
-        """enable_temporal=False should disable even when config says True."""
+        """enable_temporal=False with enable_vo=False should disable all enrichment."""
         from claw_cog import ProcessingResult
-        result = agent.process("meeting every day", enable_temporal=False)
+        result = agent.process("meeting every day", enable_temporal=False, enable_vo=False)
         assert isinstance(result, ProcessingResult)
         assert not isinstance(result, ConsciousnessResultWithTime)
 

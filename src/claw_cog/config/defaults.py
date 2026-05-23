@@ -43,6 +43,18 @@ class Config:
     temporal_decay_rate: float = 0.1
     temporal_confidence_threshold: float = 0.5
 
+    # Volition settings (v1.8.0 V/O layer)
+    volition_enabled: bool = True
+    volition_max_goals: int = 10
+    volition_intention_buffer_size: int = 5
+
+    # Observation settings (v1.8.0 V/O layer)
+    observation_enabled: bool = True
+    observation_history_size: int = 100
+    observation_anomaly_low_threshold: float = 0.1
+    observation_anomaly_medium_threshold: float = 0.3
+    observation_anomaly_high_threshold: float = 0.5
+
     # Performance settings
     enable_profiling: bool = False
     log_level: str = "INFO"
@@ -78,6 +90,14 @@ class Config:
             "temporal_retention_capacity": self.temporal_retention_capacity,
             "temporal_decay_rate": self.temporal_decay_rate,
             "temporal_confidence_threshold": self.temporal_confidence_threshold,
+            "volition_enabled": self.volition_enabled,
+            "volition_max_goals": self.volition_max_goals,
+            "volition_intention_buffer_size": self.volition_intention_buffer_size,
+            "observation_enabled": self.observation_enabled,
+            "observation_history_size": self.observation_history_size,
+            "observation_anomaly_low_threshold": self.observation_anomaly_low_threshold,
+            "observation_anomaly_medium_threshold": self.observation_anomaly_medium_threshold,
+            "observation_anomaly_high_threshold": self.observation_anomaly_high_threshold,
             "enable_profiling": self.enable_profiling,
             "log_level": self.log_level,
         }
