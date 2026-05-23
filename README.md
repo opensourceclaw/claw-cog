@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/Version-1.5.0-blue.svg)](https://github.com/opensourceclaw/claw-cog)
+[![Version](https://img.shields.io/badge/Version-3.0.0-blue.svg)](https://github.com/opensourceclaw/claw-cog)
 
 **AI Consciousness Component for AI Agent**
 
@@ -30,6 +30,12 @@ It builds on [claw-mem](https://github.com/opensourceclaw/claw-mem) (memory) and
 
 ```
 ┌──────────────────────────────────────────────┐
+│              O: Observation                   │
+│       Anomaly Detection · Self Monitoring     │
+├──────────────────────────────────────────────┤
+│              V: Volition                      │
+│       Goal Tracking · Intention Selection     │
+├──────────────────────────────────────────────┤
 │              C2: Metacognitive                │
 │     Self-Monitoring · Confidence Assessment   │
 │          Goal Tracking · Protention           │
@@ -45,17 +51,17 @@ It builds on [claw-mem](https://github.com/opensourceclaw/claw-mem) (memory) and
     claw-mem (Memory)      claw-rl (Learning)
 ```
 
-**Processing Pipeline**: `Input → Memory Retrieval → C0 Pattern Match → C1 Workspace Broadcast → C2 Metacognitive Monitor → Output`
+**ETCLOVG Pipeline**: `Input → O (Observe) → V (Volition) → C2 (Metacognitive) → C1 (Workspace) → C0 (Pattern) → Output`
 
 **Indicator Properties** (Butlin et al.):
 
-| Theory | Indicator | v1.0.0 |
+| Theory | Indicator | v3.0.0 |
 |--------|-----------|:------:|
 | GWT | Global Workspace Theory | ✅ |
 | RPT | Recurrent Processing Theory | ✅ |
 | HOT | Higher-Order Thought Theory | ✅ |
 | AST | Attention Schema Theory | ✅ |
-| PP | Perceptual Presence | v2.0.0 |
+| PP | Perceptual Presence | v4.0.0 |
 
 ---
 
