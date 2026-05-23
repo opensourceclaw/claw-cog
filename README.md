@@ -16,7 +16,7 @@ Global Workspace · C0-C1-C2 Architecture · Metacognitive Assessment
 
 ## Overview
 
-**claw-cog** is the **Consciousness Layer** of Project Neo, implementing AI consciousness capabilities based on established cognitive neuroscience theories:
+**claw-cog** is the **Consciousness Layer** of OpenClaw, implementing AI consciousness capabilities based on established cognitive neuroscience theories:
 
 - **Global Workspace Theory** (GNWT) — Baars, Dehaene
 - **C0-C1-C2 Layered Architecture** — Dehaene et al.
