@@ -1,5 +1,5 @@
 """
-claw-cog v3.0.0: AI Consciousness Component for Project Neo
+claw-cog v3.1.0: AI Consciousness Component for Project Neo
 
 A computational consciousness framework based on:
 - Global Workspace Theory (GWT) - Baars, Dehaene
@@ -58,7 +58,16 @@ from claw_cog.core.agent import (
     ConsciousnessResultWithTime, ConsciousnessResultWithVO,
 )
 
-__version__ = "3.0.0"
+# Execution Layer (v3.1.0)
+from .execution import Action, ActionResult, ActionExecutor, ExecutionContext, RollbackManager
+from .execution.handlers import (
+    ActionHandler,
+    MemoryActionHandler,
+    LearningActionHandler,
+    ExternalActionHandler,
+)
+
+__version__ = "3.1.0"
 __all__ = [
     "ConsciousAgent",
     "ConsciousnessLevel",
@@ -104,4 +113,7 @@ __all__ = [
     "SeverityLevel",
     "SelfMonitor",
     "AnomalyDetector",
+    # v3.1.0: Execution Layer
+    "Action", "ActionResult", "ActionExecutor", "ExecutionContext", "RollbackManager",
+    "ActionHandler", "MemoryActionHandler", "LearningActionHandler", "ExternalActionHandler",
 ]

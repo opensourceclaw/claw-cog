@@ -37,6 +37,10 @@ from claw_cog.modules.observation.self_monitor import SelfMonitor
 from claw_cog.modules.observation.anomaly_detector import AnomalyDetector
 from claw_cog.modules.observation.types import Observation, Anomaly
 
+# Execution layer (v3.1.0)
+from claw_cog.execution import Action, ActionExecutor, ExecutionContext, ActionResult
+from claw_cog.execution.handlers import ActionHandler, MemoryActionHandler, LearningActionHandler
+
 logger = logging.getLogger(__name__)
 
 
@@ -136,6 +140,9 @@ class ConsciousAgent:
         # Memory bridge
         from claw_cog.integration.claw_mem_bridge import ClawMemBridge
         self.memory = ClawMemBridge(self.config)
+
+        # v3.1.0: Execution layer
+        self.executor: Optional[ActionExecutor] = None
 
         # v1.5.0: Temporal consciousness modules (ITCMA)
         self._temporal_perception = TemporalPerception(memory=self.memory)
@@ -463,6 +470,103 @@ class ConsciousAgent:
             return ConsciousnessLevel.C1_CONSCIOUS_ACCESS
         else:
             return ConsciousnessLevel.C0_UNCONSCIOUS
+
+    def enable_execution(self, handlers: Optional[List[ActionHandler]] = None,
+                         config: Any = None) -> ActionExecutor:
+        """Enable the execution layer for this agent.
+
+        Creates an ActionExecutor and registers the provided handlers.
+        If no handlers are provided, registers Memory and Learning handlers.
+
+        Args:
+            handlers: Optional list of ActionHandler instances.
+            config: Optional config for the ActionExecutor.
+
+        Returns:
+            The created ActionExecutor.
+        """
+        self.executor = ActionExecutor(config=config)
+
+        if handlers:
+            for handler in handlers:
+                self.executor.register_handler(handler.__class__.__name__, handler)
+        else:
+            # Register default handlers
+            self.executor.register_handler("memory_handler", MemoryActionHandler())
+            self.executor.register_handler("learning_handler", LearningActionHandler())
+
+        return self.executor
+
+    def process_and_execute(self, input: Any,
+                            context: Optional[Dict] = None,
+                            confidence_threshold: float = 0.7) -> Any:
+        """Process input and execute any resulting actions.
+
+        Args:
+            input: The input to process.
+            context: Optional context dictionary.
+            confidence_threshold: Confidence threshold for processing.
+
+        Returns:
+            The processing result with execution_results attached.
+        """
+        result = self.process(input, context=context,
+                              confidence_threshold=confidence_threshold)
+
+        if self.executor is None:
+            return result
+
+        # Extract actions from VO result if available
+        actions = self._extract_actions(result)
+        if actions:
+            exec_ctx = ExecutionContext()
+            execution_results = self.executor.execute_batch(actions, context=exec_ctx)
+
+            # Attach execution results to the processing result
+            if hasattr(result, 'execution_results'):
+                result.execution_results = execution_results
+            else:
+                # Dynamically add if attribute doesn't exist
+                setattr(result, 'execution_results', execution_results)
+
+        return result
+
+    def _extract_actions(self, result: Any) -> List[Action]:
+        """Extract actions from a processing result.
+
+        Converts Volition intentions to executable actions.
+        """
+        actions = []
+
+        # Check for VO results (ConsciousnessResultWithVO)
+        if hasattr(result, 'active_intention') and result.active_intention:
+            intention = result.active_intention
+            actions.append(Action(
+                action_type="learning",
+                description=f"Execute intention: {intention.action}",
+                parameters={
+                    "intention_id": intention.intention_id,
+                    "goal_id": intention.goal_id,
+                    "confidence": intention.confidence,
+                },
+                source="volition",
+            ))
+
+        # Check for anomalies
+        if hasattr(result, 'anomalies') and result.anomalies:
+            for anomaly in result.anomalies[:3]:  # Limit to top 3
+                actions.append(Action(
+                    action_type="notification",
+                    description=f"Anomaly: {anomaly.description}",
+                    parameters={
+                        "anomaly_id": anomaly.anomaly_id,
+                        "severity": anomaly.severity,
+                        "message": anomaly.description,
+                    },
+                    source="observation",
+                ))
+
+        return actions
 
     def assess_metacognition(self) -> Dict[str, float]:
         """
