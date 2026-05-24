@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/Version-3.0.0-blue.svg)](https://github.com/opensourceclaw/claw-cog)
+[![Version](https://img.shields.io/badge/Version-3.1.0-blue.svg)](https://github.com/opensourceclaw/claw-cog)
 
 **AI Consciousness Component for AI Agent**
 
@@ -51,11 +51,11 @@ It builds on [claw-mem](https://github.com/opensourceclaw/claw-mem) (memory) and
     claw-mem (Memory)      claw-rl (Learning)
 ```
 
-**ETCLOVG Pipeline**: `Input → O (Observe) → V (Volition) → C2 (Metacognitive) → C1 (Workspace) → C0 (Pattern) → Output`
+**ETCLOVG+E Pipeline**: `Input → O (Observe) → V (Volition) → C2 (Metacognitive) → C1 (Workspace) → C0 (Pattern) → Execution → Output`
 
 **Indicator Properties** (Butlin et al.):
 
-| Theory | Indicator | v3.0.0 |
+| Theory | Indicator | v3.1.0 |
 |--------|-----------|:------:|
 | GWT | Global Workspace Theory | ✅ |
 | RPT | Recurrent Processing Theory | ✅ |

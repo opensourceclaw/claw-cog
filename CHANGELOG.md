@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-05-24
+
+### Added - Execution Layer (Action Execution)
+- **ActionExecutor**: Dispatch cognitive decisions to registered handlers
+  - Handler registration and management
+  - Single and batch execution support
+  - Automatic rollback on batch failure
+- **ExecutionContext**: Execution environment with session/task metadata
+- **ActionResult**: Structured execution result with status, output, rollback info
+- **RollbackManager**: LIFO snapshot-based rollback mechanism
+- **Action Handlers**:
+  - `MemoryActionHandler`: store/retrieve/update/delete with claw-mem bridge
+  - `LearningActionHandler`: feedback signal processing, policy update/store
+  - `ExternalActionHandler`: Safe external actions (URL filtering for localhost/file://)
+- **ConsciousAgent Integration**:
+  - `enable_execution()`: Enable execution layer
+  - `process_and_execute()`: Process input and execute extracted actions
+  - `_extract_actions()`: Convert volition intentions + observation anomalies to executable Actions
+- **Test Suite**: 74 tests (unit + integration) for execution layer
+
+### Changed
+- Architecture: ETCLOVG → ETCLOVG+E (Execution layer added)
+- Pipeline: `Output` now followed by optional `Execution` stage
+- Version bumped from 3.0.0 to 3.1.0 (MINOR: execution capability)
+
+### Version Semantics Updated
+- **v1.x**: Basic Consciousness (C0-C1-C2 + GWT)
+- **v2.x**: Temporal Consciousness (+ ITCMA) 
+- **v3.x**: Autonomous Consciousness (+ Volition + Observation + Execution)
+- **v4.x**: Perceptual Presence (+ PP, planned)
+
 ## [3.0.0] - 2026-05-24
 
 ### Added - ETCLOVG Architecture (Autonomous Consciousness)
