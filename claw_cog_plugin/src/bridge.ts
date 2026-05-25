@@ -151,7 +151,7 @@ export class ClawCogBridge {
 
   private call(method: string, params: any = {}): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (!this.process || this.process.killed) {
+      if (!this.process || this.process.killed || !this.process.stdin) {
         return reject(new Error("Bridge not connected"));
       }
 
@@ -164,7 +164,13 @@ export class ClawCogBridge {
       });
 
       this.pending.set(id, { resolve, reject });
-      this.process.stdin?.write(request + "\n");
+      try {
+        this.process.stdin.write(request + "\n");
+      } catch (writeError) {
+        this.pending.delete(id);
+        reject(new Error(`Failed to write to bridge: ${(writeError as Error).message}`));
+        return;
+      }
 
       // Timeout after 30s
       setTimeout(() => {
