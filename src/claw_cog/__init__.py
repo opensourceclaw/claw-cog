@@ -1,5 +1,5 @@
 """
-claw-cog v3.1.0: AI Consciousness Component for Project Neo
+claw-cog v4.0.0: AI Consciousness Component for Project Neo
 
 A computational consciousness framework based on:
 - Global Workspace Theory (GWT) - Baars, Dehaene
@@ -104,7 +104,7 @@ from .consciousness.verification import (
     ConsistencyResult,
 )
 
-__version__ = "3.1.0"
+__version__ = "4.0.0"
 __all__ = [
     "ConsciousAgent",
     "ConsciousnessLevel",

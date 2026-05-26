@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "claw-cog"
-version = "3.1.0"
+version = "4.0.0"
 description = "AI Consciousness Component for Project Neo - Based on Global Workspace Theory and C0-C1-C2 Framework"
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -143,3 +143,9 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+"temporal_prediction.py" = ["F821"]
+"temporal_understanding.py" = ["F821"]
+"defaults.py" = ["F821"]
