@@ -18,7 +18,6 @@ from claw_cog.config.defaults import Config
 from claw_cog.exceptions import ConfigurationError
 from claw_cog.core.workspace import GlobalWorkspace, C1Result
 from claw_cog.core.layers import LayerManager
-from claw_cog.layers.c0_unconscious import C0Result
 from claw_cog.layers.c2_metacognitive import C2Result
 from claw_cog.assessment.meta_d_prime import MetacognitiveAssessment
 
@@ -38,8 +37,18 @@ from claw_cog.modules.observation.anomaly_detector import AnomalyDetector
 from claw_cog.modules.observation.types import Observation, Anomaly
 
 # Execution layer (v3.1.0)
-from claw_cog.execution import Action, ActionExecutor, ExecutionContext, ActionResult
+from claw_cog.execution import Action, ActionExecutor, ExecutionContext
 from claw_cog.execution.handlers import ActionHandler, MemoryActionHandler, LearningActionHandler
+
+# Verification layer (v4.0.0)
+from claw_cog.consciousness.verification import (
+    VerificationOrchestrator,
+    VerificationReport,
+    OutputValidator,
+    ConfidenceCalibrator,
+    QualityAssessor,
+    ConsistencyChecker,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -143,6 +152,24 @@ class ConsciousAgent:
 
         # v3.1.0: Execution layer
         self.executor: Optional[ActionExecutor] = None
+
+        # v4.0.0: Verification layer (Consciousness)
+        self._verifier = VerificationOrchestrator(
+            validator=OutputValidator(),
+            calibrator=ConfidenceCalibrator(
+                ece_threshold=self.config.verification_calibration_ece_threshold,
+                num_bins=self.config.verification_calibration_num_bins,
+            ),
+            quality_assessor=QualityAssessor(
+                completeness_threshold=self.config.verification_quality_completeness_threshold,
+                clarity_threshold=self.config.verification_quality_clarity_threshold,
+                safety_threshold=self.config.verification_quality_safety_threshold,
+                relevance_threshold=self.config.verification_quality_relevance_threshold,
+            ),
+            consistency_checker=ConsistencyChecker(
+                deviation_threshold=self.config.verification_consistency_deviation_threshold,
+            ),
+        )
 
         # v1.5.0: Temporal consciousness modules (ITCMA)
         self._temporal_perception = TemporalPerception(memory=self.memory)
@@ -431,6 +458,18 @@ class ConsciousAgent:
                 metadata={"confidence": c1_result.confidence},
             )
 
+        # ── 9.5. V: Verification — Validate, calibrate, assess quality and consistency ─
+        if self.config.verification_enabled:
+            verification_report = self._verifier.verify(
+                result,
+                history=self._processing_history,
+                context={},
+            )
+            result.metadata["verification"] = verification_report.to_dict()
+            logger.debug(
+                f"V: verification {'passed' if verification_report.passed else 'failed'}"
+            )
+
         # 12. Store temporal events as memories (v1.5.0)
         if use_temporal and temporal_events:
             for event in temporal_events[:5]:  # Store top 5 events
@@ -496,6 +535,26 @@ class ConsciousAgent:
             self.executor.register_handler("learning_handler", LearningActionHandler())
 
         return self.executor
+
+    @property
+    def verifier(self) -> VerificationOrchestrator:
+        """The verification orchestrator for this agent."""
+        return self._verifier
+
+    def verify(self, result: Any,
+               history: Optional[List[Any]] = None) -> VerificationReport:
+        """Run verification on a processing result.
+
+        Args:
+            result: The processing result to verify.
+            history: Optional list of previous results for consistency checking.
+
+        Returns:
+            VerificationReport with overall passed/failed and sub-results.
+        """
+        if history is None:
+            history = self._processing_history[:-1] if len(self._processing_history) > 1 else []
+        return self._verifier.verify(result, history=history, context={})
 
     def process_and_execute(self, input: Any,
                             context: Optional[Dict] = None,
@@ -684,7 +743,7 @@ class ConsciousAgent:
         return ConsciousnessLevel.C0_UNCONSCIOUS
 
     def reset(self) -> None:
-        """Reset agent state including temporal, volition, and observation modules."""
+        """Reset agent state including temporal, volition, observation, and verification modules."""
         self._processing_history.clear()
         self.layers.reset()
         self.workspace.clear_history()
@@ -693,3 +752,4 @@ class ConsciousAgent:
         self._temporal_prediction.clear()
         self._volition_engine.clear()
         self._observation_engine.clear()
+        self._verifier.reset()

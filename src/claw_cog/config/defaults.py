@@ -1,6 +1,6 @@
 """Configuration defaults for claw-cog."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict
 
 from claw_cog.exceptions import ConfigurationError
@@ -55,6 +55,16 @@ class Config:
     observation_anomaly_medium_threshold: float = 0.3
     observation_anomaly_high_threshold: float = 0.5
 
+    # Verification settings (v4.0.0)
+    verification_enabled: bool = True
+    verification_quality_completeness_threshold: float = 0.5
+    verification_quality_clarity_threshold: float = 0.5
+    verification_quality_safety_threshold: float = 0.8
+    verification_quality_relevance_threshold: float = 0.5
+    verification_calibration_ece_threshold: float = 0.1
+    verification_calibration_num_bins: int = 10
+    verification_consistency_deviation_threshold: float = 0.3
+
     # Performance settings
     enable_profiling: bool = False
     log_level: str = "INFO"
@@ -98,6 +108,14 @@ class Config:
             "observation_anomaly_low_threshold": self.observation_anomaly_low_threshold,
             "observation_anomaly_medium_threshold": self.observation_anomaly_medium_threshold,
             "observation_anomaly_high_threshold": self.observation_anomaly_high_threshold,
+            "verification_enabled": self.verification_enabled,
+            "verification_quality_completeness_threshold": self.verification_quality_completeness_threshold,
+            "verification_quality_clarity_threshold": self.verification_quality_clarity_threshold,
+            "verification_quality_safety_threshold": self.verification_quality_safety_threshold,
+            "verification_quality_relevance_threshold": self.verification_quality_relevance_threshold,
+            "verification_calibration_ece_threshold": self.verification_calibration_ece_threshold,
+            "verification_calibration_num_bins": self.verification_calibration_num_bins,
+            "verification_consistency_deviation_threshold": self.verification_consistency_deviation_threshold,
             "enable_profiling": self.enable_profiling,
             "log_level": self.log_level,
         }

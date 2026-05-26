@@ -67,6 +67,23 @@ from .execution.handlers import (
     ExternalActionHandler,
 )
 
+# Verification Layer (v4.0.0)
+from .consciousness.verification import (
+    VerificationOrchestrator,
+    VerificationReport,
+    OutputValidator,
+    ValidationResult,
+    ValidationStatus,
+    ConfidenceCalibrator,
+    CalibrationResult,
+    CalibrationBin,
+    QualityAssessor,
+    QualityResult,
+    QualityScore,
+    ConsistencyChecker,
+    ConsistencyResult,
+)
+
 __version__ = "3.1.0"
 __all__ = [
     "ConsciousAgent",
@@ -116,4 +133,10 @@ __all__ = [
     # v3.1.0: Execution Layer
     "Action", "ActionResult", "ActionExecutor", "ExecutionContext", "RollbackManager",
     "ActionHandler", "MemoryActionHandler", "LearningActionHandler", "ExternalActionHandler",
+    # v4.0.0: Verification Layer
+    "VerificationOrchestrator", "VerificationReport",
+    "OutputValidator", "ValidationResult", "ValidationStatus",
+    "ConfidenceCalibrator", "CalibrationResult", "CalibrationBin",
+    "QualityAssessor", "QualityResult", "QualityScore",
+    "ConsistencyChecker", "ConsistencyResult",
 ]
