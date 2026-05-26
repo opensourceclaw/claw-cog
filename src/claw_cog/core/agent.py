@@ -49,6 +49,13 @@ from claw_cog.consciousness.verification import (
     QualityAssessor,
     ConsistencyChecker,
 )
+from claw_cog.consciousness.governance import (
+    PolicyEnforcer,
+    AuditLogger,
+    SafetyBoundary,
+    PermissionController,
+    Role,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -168,6 +175,15 @@ class ConsciousAgent:
             ),
             consistency_checker=ConsistencyChecker(
                 deviation_threshold=self.config.verification_consistency_deviation_threshold,
+            ),
+        )
+
+        # v4.0.0: Governance layer (G)
+        self._governance = PolicyEnforcer(
+            boundary=SafetyBoundary(),
+            permission=PermissionController(),
+            audit=AuditLogger(
+                max_records=self.config.governance_audit_max_records
             ),
         )
 
@@ -470,6 +486,21 @@ class ConsciousAgent:
                 f"V: verification {'passed' if verification_report.passed else 'failed'}"
             )
 
+        # ── 9.6. G: Governance — Safety boundary, permission, input/output filter ─
+        if self.config.governance_enabled:
+            governance_result = self._governance.evaluate_input(
+                str(input), role=Role.ASSISTANT
+            )
+            result.metadata["governance"] = {
+                "allowed": governance_result.allowed,
+                "decision": governance_result.decision.value,
+                "explanation": governance_result.explanation,
+                "summary": self._governance.get_audit_summary(),
+            }
+            logger.debug(
+                f"G: governance {governance_result.decision.value}"
+            )
+
         # 12. Store temporal events as memories (v1.5.0)
         if use_temporal and temporal_events:
             for event in temporal_events[:5]:  # Store top 5 events
@@ -540,6 +571,11 @@ class ConsciousAgent:
     def verifier(self) -> VerificationOrchestrator:
         """The verification orchestrator for this agent."""
         return self._verifier
+
+    @property
+    def governance(self) -> PolicyEnforcer:
+        """The governance policy enforcer for this agent."""
+        return self._governance
 
     def verify(self, result: Any,
                history: Optional[List[Any]] = None) -> VerificationReport:
@@ -753,3 +789,4 @@ class ConsciousAgent:
         self._volition_engine.clear()
         self._observation_engine.clear()
         self._verifier.reset()
+        self._governance.reset()

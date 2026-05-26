@@ -65,6 +65,11 @@ class Config:
     verification_calibration_num_bins: int = 10
     verification_consistency_deviation_threshold: float = 0.3
 
+    # Governance settings (v4.0.0 Phase 3)
+    governance_enabled: bool = True
+    governance_level: str = "medium"  # low / medium / high
+    governance_audit_max_records: int = 1000
+
     # Performance settings
     enable_profiling: bool = False
     log_level: str = "INFO"
@@ -116,6 +121,9 @@ class Config:
             "verification_calibration_ece_threshold": self.verification_calibration_ece_threshold,
             "verification_calibration_num_bins": self.verification_calibration_num_bins,
             "verification_consistency_deviation_threshold": self.verification_consistency_deviation_threshold,
+            "governance_enabled": self.governance_enabled,
+            "governance_level": self.governance_level,
+            "governance_audit_max_records": self.governance_audit_max_records,
             "enable_profiling": self.enable_profiling,
             "log_level": self.log_level,
         }

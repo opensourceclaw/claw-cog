@@ -67,6 +67,26 @@ from .execution.handlers import (
     ExternalActionHandler,
 )
 
+# Governance Layer (v4.0.0 Phase 3)
+from .consciousness.governance import (
+    AuditLogger,
+    AuditRecord,
+    BehaviorConstraint,
+    BoundaryDecision,
+    BoundaryRule,
+    InputFilter,
+    OutputFilter,
+    PermissionController,
+    PermissionDecision,
+    PermissionResult,
+    PolicyDecision,
+    PolicyEnforcer,
+    PolicyResult,
+    RiskLevel,
+    Role,
+    SafetyBoundary,
+)
+
 # Verification Layer (v4.0.0)
 from .consciousness.verification import (
     VerificationOrchestrator,
@@ -133,6 +153,12 @@ __all__ = [
     # v3.1.0: Execution Layer
     "Action", "ActionResult", "ActionExecutor", "ExecutionContext", "RollbackManager",
     "ActionHandler", "MemoryActionHandler", "LearningActionHandler", "ExternalActionHandler",
+    # v4.0.0: Governance Layer
+    "AuditLogger", "AuditRecord", "BehaviorConstraint",
+    "BoundaryDecision", "BoundaryRule", "InputFilter", "OutputFilter",
+    "PermissionController", "PermissionDecision", "PermissionResult",
+    "PolicyDecision", "PolicyEnforcer", "PolicyResult",
+    "RiskLevel", "Role", "SafetyBoundary",
     # v4.0.0: Verification Layer
     "VerificationOrchestrator", "VerificationReport",
     "OutputValidator", "ValidationResult", "ValidationStatus",

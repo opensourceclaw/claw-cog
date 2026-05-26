@@ -1,9 +1,27 @@
-"""Consciousness package for claw-cog.
+"""Consciousness package for claw-cog v4.0.
 
-Contains the verification layer for validating and calibrating
-conscious processing results.
+Contains the verification layer and governance layer for
+validating, calibrating, and governing conscious processing results.
 """
 
+from .governance import (
+    AuditLogger,
+    AuditRecord,
+    BehaviorConstraint,
+    BoundaryDecision,
+    BoundaryRule,
+    InputFilter,
+    OutputFilter,
+    PermissionController,
+    PermissionDecision,
+    PermissionResult,
+    PolicyDecision,
+    PolicyEnforcer,
+    PolicyResult,
+    RiskLevel,
+    Role,
+    SafetyBoundary,
+)
 from .verification import (
     CalibrationBin,
     CalibrationResult,
@@ -21,15 +39,31 @@ from .verification import (
 )
 
 __all__ = [
+    "AuditLogger",
+    "AuditRecord",
+    "BehaviorConstraint",
+    "BoundaryDecision",
+    "BoundaryRule",
     "CalibrationBin",
     "CalibrationResult",
     "ConfidenceCalibrator",
     "ConsistencyChecker",
     "ConsistencyResult",
+    "InputFilter",
+    "OutputFilter",
     "OutputValidator",
+    "PermissionController",
+    "PermissionDecision",
+    "PermissionResult",
+    "PolicyDecision",
+    "PolicyEnforcer",
+    "PolicyResult",
     "QualityAssessor",
     "QualityResult",
     "QualityScore",
+    "RiskLevel",
+    "Role",
+    "SafetyBoundary",
     "ValidationResult",
     "ValidationStatus",
     "VerificationOrchestrator",
