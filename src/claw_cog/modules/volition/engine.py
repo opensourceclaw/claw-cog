@@ -5,7 +5,7 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from .types import Goal, GoalPriority, GoalStatus, Intention, IntentionConflict
+from .types import Goal, GoalPriority, GoalStatus, Intention
 from .goal_tracker import GoalTracker
 from .intention_buffer import IntentionBuffer
 

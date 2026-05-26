@@ -4,7 +4,7 @@ MemoryActionHandler — execute memory-related actions (store, retrieve, update,
 Integrates with claw-mem via ClawMemBridge.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from datetime import datetime
 
 from claw_cog.execution.context import Action, ExecutionContext

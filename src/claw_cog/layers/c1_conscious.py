@@ -5,7 +5,7 @@ Global workspace access, decision making, information integration.
 Based on Freud's Ego and Husserl's Retention.
 """
 
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from typing import Any, Dict, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 import logging
 

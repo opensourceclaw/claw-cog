@@ -8,10 +8,9 @@ Part of the ITCMA (Integrated Temporal Consciousness Model Architecture).
 """
 
 import re
-import math
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timedelta
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 
 

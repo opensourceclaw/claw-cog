@@ -105,7 +105,7 @@ class TimeConsciousnessModule:
             return protentions
 
         # Pattern-based protention
-        recent = list(self._retention_buffer)[-5:]
+        list(self._retention_buffer)[-5:]
         for pattern_name, timestamps in self._event_patterns.items():
             if timestamps:
                 avg_interval = (

@@ -6,13 +6,13 @@ C1: Conscious Access - Global workspace, decision making
 C2: Metacognitive - Self-monitoring, goal tracking
 """
 
-from typing import Any, Dict, Optional
+from typing import Dict
 import logging
 
 from claw_cog.config.defaults import Config
-from claw_cog.layers.c0_unconscious import C0Unconscious, C0Result
+from claw_cog.layers.c0_unconscious import C0Unconscious
 from claw_cog.layers.c1_conscious import C1Conscious
-from claw_cog.layers.c2_metacognitive import C2Metacognitive, C2Result
+from claw_cog.layers.c2_metacognitive import C2Metacognitive
 
 logger = logging.getLogger(__name__)
 

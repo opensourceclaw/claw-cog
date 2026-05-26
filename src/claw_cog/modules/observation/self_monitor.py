@@ -27,7 +27,7 @@ class SelfMonitor:
         self, layer: str, metric: str, value: float, timestamp: Optional[str] = None
     ):
         """Record a metric observation for a layer."""
-        ts = timestamp or datetime.now(timezone.utc).isoformat()
+        timestamp or datetime.now(timezone.utc).isoformat()
         values = self._history[layer][metric]
         values.append(value)
         if len(values) > self.history_size:

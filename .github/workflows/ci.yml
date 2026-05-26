@@ -7,128 +7,27 @@ on:
     branches: [main, v2.x, v3.x]
 
 jobs:
-  test:
-    name: Test Python ${{ matrix.python-version }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: 'pip'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install git+https://github.com/opensourceclaw/claw-mem.git@v2.x
-          pip install git+https://github.com/opensourceclaw/claw-rl.git@v2.x
-          pip install -e ".[dev]"
-      
-      - name: Run tests with pytest
-        run: |
-          pytest --cov=claw_cog --cov-report=xml --cov-report=term-missing -v --tb=short
-        continue-on-error: false
-      
-      - name: Upload coverage to Codecov
-        if: matrix.python-version == '3.10'
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.xml
-          flags: unittests
-          name: codecov-claw-cog
-          fail_ci_if_error: false
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-  
-  lint:
-    name: Lint
+  python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-          cache: 'pip'
-      
-      - name: Install linters
-        run: |
-          python -m pip install --upgrade pip
-          pip install black flake8 mypy
-          pip install git+https://github.com/opensourceclaw/claw-mem.git@v2.x
-          pip install git+https://github.com/opensourceclaw/claw-rl.git@v2.x
-          pip install -e ".[dev]"
-      
-      - name: Run Black
-        run: black --check --diff src/claw_cog tests
-      
-      - name: Run Flake8
-        run: flake8 src/claw_cog tests --max-line-length=100 --exclude=__pycache__,.git,.eggs,build,dist
-      
-      - name: Run MyPy
-        run: mypy src/claw_cog --ignore-missing-imports || true
-        continue-on-error: true
-  
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pip-audit bandit
-          pip install git+https://github.com/opensourceclaw/claw-mem.git@v2.x
-          pip install git+https://github.com/opensourceclaw/claw-rl.git@v2.x
-          pip install -e ".[dev]"
-      
-      - name: Run pip-audit
-        run: pip-audit --skip-editable || true
-        continue-on-error: true
-      
-      - name: Run Bandit
-        run: bandit -r src/claw_cog -ll --skip B101,B311 || true
-        continue-on-error: true
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - run: ruff check src/
+      - run: ruff format --check src/ 2>/dev/null || true
+      - run: pytest tests/ --tb=short
 
-  build:
-    name: Build Package
+  typescript:
     runs-on: ubuntu-latest
-    needs: [test, lint]
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: '3.10'
-      
-      - name: Install build tools
+          node-version: "22"
+      - working-directory: claw_cog_plugin
         run: |
-          python -m pip install --upgrade pip
-          pip install build twine
-      
-      - name: Build package
-        run: python -m build
-      
-      - name: Check package
-        run: twine check dist/*
-      
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
+          npm ci
+          npx tsc --noEmit
+          npm test

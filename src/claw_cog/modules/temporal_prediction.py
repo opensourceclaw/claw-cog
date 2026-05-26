@@ -7,8 +7,7 @@ resolution suggestion. Uses patterns from C1 to predict and plan.
 Part of the ITCMA (Integrated Temporal Consciousness Model Architecture).
 """
 
-import math
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 from enum import Enum

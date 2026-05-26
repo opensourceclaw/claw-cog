@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional
 import logging
 import math
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from claw_cog.config.defaults import Config
 

@@ -7,8 +7,8 @@ deadline awareness. Builds on C0 TemporalPerception output.
 Part of the ITCMA (Integrated Temporal Consciousness Model Architecture).
 """
 
-from typing import Dict, List, Optional, Tuple
-from datetime import datetime, timedelta
+from typing import Dict, List, Optional
+from datetime import datetime
 from dataclasses import dataclass, field
 from enum import Enum
 from collections import defaultdict
