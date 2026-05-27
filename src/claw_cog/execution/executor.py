@@ -27,7 +27,7 @@ class ActionExecutor:
         result = executor.execute(action, context)
     """
 
-    def __init__(self, config: Optional[any] = None):
+    def __init__(self, config: Optional[Any] = None):
         self._config = config
         self._handlers: Dict[str, ActionHandler] = {}
         self._context: Optional[ExecutionContext] = None
