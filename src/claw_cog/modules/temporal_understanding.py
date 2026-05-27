@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Temporal Understanding (C1 Enhancement — P1-1)
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Temporal Perception (C0 Enhancement — P1-1)
 

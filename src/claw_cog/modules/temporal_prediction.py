@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Temporal Prediction (C2 Enhancement — P1-1)
 

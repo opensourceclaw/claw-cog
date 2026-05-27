@@ -6,7 +6,7 @@ and rollback for failed actions.
 """
 
 import time
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from claw_cog.execution.context import Action, ExecutionContext
 from claw_cog.execution.result import ActionResult
