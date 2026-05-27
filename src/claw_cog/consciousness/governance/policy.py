@@ -95,9 +95,7 @@ class PolicyEnforcer:
         details: Dict[str, Any] = {}
 
         # Step 1: Input filtering
-        is_safe, filtered, _safe, _filtered, reason = self.input_filter.filter(content)
-        is_safe = _safe
-        filtered_content = _filtered
+        is_safe, filtered, reason = self.input_filter.filter(content)
         reason = reason or ""
         if not is_safe:
             self.audit.log("InputFilter", content[:50], "denied", reason)
