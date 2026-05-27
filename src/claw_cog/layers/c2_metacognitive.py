@@ -63,7 +63,10 @@ class C2Metacognitive:
         }
         self._monitor_count: int = 0
         self._adjustment_counts: Dict[str, int] = {
-            "none": 0, "strategy": 0, "confidence": 0, "seek_help": 0
+            "none": 0,
+            "strategy": 0,
+            "confidence": 0,
+            "seek_help": 0,
         }
         self._recent_confidences: List[float] = []
         # rc.2: Sampling and caching for performance
@@ -80,6 +83,7 @@ class C2Metacognitive:
         # rc.2: Sampling optimization — skip full computation if sampling
         if self._monitor_sample_rate < 1.0:
             import random
+
             if random.random() > self._monitor_sample_rate:
                 if self._cached_result is not None:
                     return self._cached_result
@@ -228,9 +232,7 @@ class C2Metacognitive:
         return {
             "total_monitors": self._monitor_count,
             "adjustments": dict(self._adjustment_counts),
-            "trusted_ratio": (
-                self._adjustment_counts["none"] / max(1, self._monitor_count)
-            ),
+            "trusted_ratio": (self._adjustment_counts["none"] / max(1, self._monitor_count)),
         }
 
     def is_active(self) -> bool:

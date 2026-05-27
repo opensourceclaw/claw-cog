@@ -24,7 +24,11 @@ from claw_cog.assessment.meta_d_prime import MetacognitiveAssessment
 # P1-1 / v1.5.0: Temporal consciousness modules
 from claw_cog.modules.temporal_perception import TemporalPerception, TemporalEvent
 from claw_cog.modules.temporal_understanding import TemporalUnderstanding, TemporalPattern
-from claw_cog.modules.temporal_prediction import TemporalPrediction, TemporalConflict, ResolutionSuggestion
+from claw_cog.modules.temporal_prediction import (
+    TemporalPrediction,
+    TemporalConflict,
+    ResolutionSuggestion,
+)
 
 # v1.8.0: Volition and Observation layers
 from claw_cog.modules.volition.engine import VolitionEngine
@@ -155,6 +159,7 @@ class ConsciousAgent:
 
         # Memory bridge
         from claw_cog.integration.claw_mem_bridge import ClawMemBridge
+
         self.memory = ClawMemBridge(self.config)
 
         # v3.1.0: Execution layer
@@ -182,9 +187,7 @@ class ConsciousAgent:
         self._governance = PolicyEnforcer(
             boundary=SafetyBoundary(),
             permission=PermissionController(),
-            audit=AuditLogger(
-                max_records=self.config.governance_audit_max_records
-            ),
+            audit=AuditLogger(max_records=self.config.governance_audit_max_records),
         )
 
         # v1.5.0: Temporal consciousness modules (ITCMA)
@@ -204,9 +207,7 @@ class ConsciousAgent:
         )
 
         # v1.8.0: Observation layer (O)
-        self._self_monitor = SelfMonitor(
-            history_size=self.config.observation_history_size
-        )
+        self._self_monitor = SelfMonitor(history_size=self.config.observation_history_size)
         self._anomaly_detector = AnomalyDetector(
             low_threshold=self.config.observation_anomaly_low_threshold,
             medium_threshold=self.config.observation_anomaly_medium_threshold,
@@ -260,11 +261,15 @@ class ConsciousAgent:
             )
 
         # Determine if temporal processing is active
-        use_temporal = enable_temporal if enable_temporal is not None else self.config.temporal_enabled
+        use_temporal = (
+            enable_temporal if enable_temporal is not None else self.config.temporal_enabled
+        )
 
         # Determine if V/O processing is active (v1.8.0)
-        use_vo = enable_vo if enable_vo is not None else (
-            self.config.volition_enabled or self.config.observation_enabled
+        use_vo = (
+            enable_vo
+            if enable_vo is not None
+            else (self.config.volition_enabled or self.config.observation_enabled)
         )
 
         # Prepare input text for temporal analysis
@@ -310,9 +315,7 @@ class ConsciousAgent:
         # ── 4. C1 Temporal: Recognize patterns from events ────────────────────
         temporal_patterns: List[TemporalPattern] = []
         if use_temporal and temporal_events:
-            temporal_patterns = self._temporal_understanding.recognize_patterns(
-                temporal_events
-            )
+            temporal_patterns = self._temporal_understanding.recognize_patterns(temporal_events)
             logger.debug(f"C1 Temporal: {len(temporal_patterns)} patterns recognized")
 
         # 5. C2: Metacognitive monitoring (if enabled)
@@ -322,9 +325,7 @@ class ConsciousAgent:
                 c1_result=c1_result,
                 confidence_threshold=confidence_threshold,
             )
-            logger.debug(
-                f"C2 monitored: needs_adjustment={c2_result.needs_adjustment}"
-            )
+            logger.debug(f"C2 monitored: needs_adjustment={c2_result.needs_adjustment}")
 
             # Apply adjustments if needed
             if c2_result.needs_adjustment:
@@ -341,9 +342,7 @@ class ConsciousAgent:
             )
             logger.debug(f"C2 Temporal: {len(predictions)} predictions made")
 
-            temporal_conflicts = self._temporal_prediction.detect_conflicts(
-                predictions
-            )
+            temporal_conflicts = self._temporal_prediction.detect_conflicts(predictions)
             logger.debug(f"C2 Temporal: {len(temporal_conflicts)} conflicts detected")
 
             if temporal_conflicts:
@@ -369,9 +368,7 @@ class ConsciousAgent:
 
             if goals:
                 active_intention = self._volition_engine.select_intention(goals)
-                logger.debug(
-                    f"V: active intention={'selected' if active_intention else 'none'}"
-                )
+                logger.debug(f"V: active intention={'selected' if active_intention else 'none'}")
 
         # ── 8. O: Observation — Observe layer states and detect anomalies ──────
         observations: List[Observation] = []
@@ -429,7 +426,7 @@ class ConsciousAgent:
                 anomalies=anomalies,
             )
         elif use_temporal:
-            result = ConsciousnessResultWithTime(
+            result = ConsciousnessResultWithTime(  # type: ignore[assignment]
                 output=c1_result.output,
                 confidence=c1_result.confidence,
                 level=self._determine_level(c1_result),
@@ -449,7 +446,7 @@ class ConsciousAgent:
                 deadline_alerts=deadline_alerts,
             )
         else:
-            result = ProcessingResult(
+            result = ProcessingResult(  # type: ignore[assignment]
                 output=c1_result.output,
                 confidence=c1_result.confidence,
                 level=self._determine_level(c1_result),
@@ -482,24 +479,18 @@ class ConsciousAgent:
                 context={},
             )
             result.metadata["verification"] = verification_report.to_dict()
-            logger.debug(
-                f"V: verification {'passed' if verification_report.passed else 'failed'}"
-            )
+            logger.debug(f"V: verification {'passed' if verification_report.passed else 'failed'}")
 
         # ── 9.6. G: Governance — Safety boundary, permission, input/output filter ─
         if self.config.governance_enabled:
-            governance_result = self._governance.evaluate_input(
-                str(input), role=Role.ASSISTANT
-            )
+            governance_result = self._governance.evaluate_input(str(input), role=Role.ASSISTANT)
             result.metadata["governance"] = {
                 "allowed": governance_result.allowed,
                 "decision": governance_result.decision.value,
                 "explanation": governance_result.explanation,
                 "summary": self._governance.get_audit_summary(),
             }
-            logger.debug(
-                f"G: governance {governance_result.decision.value}"
-            )
+            logger.debug(f"G: governance {governance_result.decision.value}")
 
         # 12. Store temporal events as memories (v1.5.0)
         if use_temporal and temporal_events:
@@ -516,9 +507,7 @@ class ConsciousAgent:
 
         return result
 
-    def _apply_c2_adjustment(
-        self, c1_result: C1Result, c2_result: C2Result
-    ) -> C1Result:
+    def _apply_c2_adjustment(self, c1_result: C1Result, c2_result: C2Result) -> C1Result:
         """Apply C2 adjustment to C1 result."""
         # TODO: Implement actual adjustment logic
         # v1.0.0: Basic adjustment
@@ -541,8 +530,9 @@ class ConsciousAgent:
         else:
             return ConsciousnessLevel.C0_UNCONSCIOUS
 
-    def enable_execution(self, handlers: Optional[List[ActionHandler]] = None,
-                         config: Any = None) -> ActionExecutor:
+    def enable_execution(
+        self, handlers: Optional[List[ActionHandler]] = None, config: Any = None
+    ) -> ActionExecutor:
         """Enable the execution layer for this agent.
 
         Creates an ActionExecutor and registers the provided handlers.
@@ -577,8 +567,7 @@ class ConsciousAgent:
         """The governance policy enforcer for this agent."""
         return self._governance
 
-    def verify(self, result: Any,
-               history: Optional[List[Any]] = None) -> VerificationReport:
+    def verify(self, result: Any, history: Optional[List[Any]] = None) -> VerificationReport:
         """Run verification on a processing result.
 
         Args:
@@ -592,9 +581,9 @@ class ConsciousAgent:
             history = self._processing_history[:-1] if len(self._processing_history) > 1 else []
         return self._verifier.verify(result, history=history, context={})
 
-    def process_and_execute(self, input: Any,
-                            context: Optional[Dict] = None,
-                            confidence_threshold: float = 0.7) -> Any:
+    def process_and_execute(
+        self, input: Any, context: Optional[Dict] = None, confidence_threshold: float = 0.7
+    ) -> Any:
         """Process input and execute any resulting actions.
 
         Args:
@@ -605,8 +594,7 @@ class ConsciousAgent:
         Returns:
             The processing result with execution_results attached.
         """
-        result = self.process(input, context=context,
-                              confidence_threshold=confidence_threshold)
+        result = self.process(input, context=context, confidence_threshold=confidence_threshold)
 
         if self.executor is None:
             return result
@@ -618,11 +606,11 @@ class ConsciousAgent:
             execution_results = self.executor.execute_batch(actions, context=exec_ctx)
 
             # Attach execution results to the processing result
-            if hasattr(result, 'execution_results'):
+            if hasattr(result, "execution_results"):
                 result.execution_results = execution_results
             else:
                 # Dynamically add if attribute doesn't exist
-                setattr(result, 'execution_results', execution_results)
+                setattr(result, "execution_results", execution_results)
 
         return result
 
@@ -634,32 +622,36 @@ class ConsciousAgent:
         actions = []
 
         # Check for VO results (ConsciousnessResultWithVO)
-        if hasattr(result, 'active_intention') and result.active_intention:
+        if hasattr(result, "active_intention") and result.active_intention:
             intention = result.active_intention
-            actions.append(Action(
-                action_type="learning",
-                description=f"Execute intention: {intention.action}",
-                parameters={
-                    "intention_id": intention.intention_id,
-                    "goal_id": intention.goal_id,
-                    "confidence": intention.confidence,
-                },
-                source="volition",
-            ))
+            actions.append(
+                Action(
+                    action_type="learning",
+                    description=f"Execute intention: {intention.action}",
+                    parameters={
+                        "intention_id": intention.intention_id,
+                        "goal_id": intention.goal_id,
+                        "confidence": intention.confidence,
+                    },
+                    source="volition",
+                )
+            )
 
         # Check for anomalies
-        if hasattr(result, 'anomalies') and result.anomalies:
+        if hasattr(result, "anomalies") and result.anomalies:
             for anomaly in result.anomalies[:3]:  # Limit to top 3
-                actions.append(Action(
-                    action_type="notification",
-                    description=f"Anomaly: {anomaly.description}",
-                    parameters={
-                        "anomaly_id": anomaly.anomaly_id,
-                        "severity": anomaly.severity,
-                        "message": anomaly.description,
-                    },
-                    source="observation",
-                ))
+                actions.append(
+                    Action(
+                        action_type="notification",
+                        description=f"Anomaly: {anomaly.description}",
+                        parameters={
+                            "anomaly_id": anomaly.anomaly_id,
+                            "severity": anomaly.severity,
+                            "message": anomaly.description,
+                        },
+                        source="observation",
+                    )
+                )
 
         return actions
 
@@ -746,6 +738,7 @@ class ConsciousAgent:
         (correct) and low-confidence (incorrect) trials.
         """
         import random
+
         random.seed(42)
 
         for i in range(n_samples):
@@ -768,9 +761,7 @@ class ConsciousAgent:
         while len(self._processing_history) > self.config.assessment_history_size:
             self._processing_history.pop(0)
 
-    def _determine_level_from_confidence(
-        self, confidence: float
-    ) -> "ConsciousnessLevel":
+    def _determine_level_from_confidence(self, confidence: float) -> "ConsciousnessLevel":
         """Determine consciousness level from a confidence value."""
         if confidence > 0.8:
             return ConsciousnessLevel.C2_METACOGNITIVE

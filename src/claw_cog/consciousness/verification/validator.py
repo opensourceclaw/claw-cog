@@ -137,8 +137,9 @@ class OutputValidator:
 
         return result
 
-    def validate_against(self, output: Any, expected: Any,
-                         context: Optional[Dict] = None) -> ValidationResult:
+    def validate_against(
+        self, output: Any, expected: Any, context: Optional[Dict] = None
+    ) -> ValidationResult:
         """Validate output against an expected value in addition to rules.
 
         Args:
@@ -157,7 +158,8 @@ class OutputValidator:
         result.add_check(
             "expected_match",
             eq_status,
-            "Output matches expected value" if output == expected
+            "Output matches expected value"
+            if output == expected
             else f"Expected {expected!r} but got {output!r}",
         )
         return result

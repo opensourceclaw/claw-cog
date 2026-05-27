@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # Try to import numpy, but provide fallback
 try:
     import numpy as np
+
     HAS_NUMPY = True
 except ImportError:
     HAS_NUMPY = False
@@ -105,9 +106,7 @@ class MetacognitiveAssessment:
             "sample_size": len(history),
         }
 
-    def _compute_d_prime(
-        self, confidences: List[float], correctness: List[bool]
-    ) -> float:
+    def _compute_d_prime(self, confidences: List[float], correctness: List[bool]) -> float:
         """
         Compute d' (Type-1 sensitivity).
 
@@ -121,7 +120,9 @@ class MetacognitiveAssessment:
             if not correct_conf or not incorrect_conf:
                 return 0.0
 
-            mean_diff = sum(correct_conf) / len(correct_conf) - sum(incorrect_conf) / len(incorrect_conf)
+            mean_diff = sum(correct_conf) / len(correct_conf) - sum(incorrect_conf) / len(
+                incorrect_conf
+            )
             return abs(mean_diff)
 
         correct_conf = np.array([c for c, corr in zip(confidences, correctness) if corr])
@@ -142,9 +143,7 @@ class MetacognitiveAssessment:
 
         return float((mean_correct - mean_incorrect) / std_pooled)
 
-    def _compute_meta_d_prime(
-        self, confidences: List[float], correctness: List[bool]
-    ) -> float:
+    def _compute_meta_d_prime(self, confidences: List[float], correctness: List[bool]) -> float:
         """
         Compute meta-d' (Type-2 sensitivity).
 
@@ -159,9 +158,7 @@ class MetacognitiveAssessment:
         meta_d = 2 * (type2_roc_auc - 0.5)
         return max(0.0, meta_d)
 
-    def _compute_type2_roc_auc(
-        self, confidences: List[float], correctness: List[bool]
-    ) -> float:
+    def _compute_type2_roc_auc(self, confidences: List[float], correctness: List[bool]) -> float:
         """
         Compute Type-2 ROC AUC.
 
@@ -212,9 +209,7 @@ class MetacognitiveAssessment:
             return {"p_value": 1.0, "significant": False, "ci_95": (0.0, 0.0)}
 
         confidences = [r.confidence for r in history]
-        correctness = [
-            getattr(r, "correct", r.confidence > 0.5) for r in history
-        ]
+        correctness = [getattr(r, "correct", r.confidence > 0.5) for r in history]
 
         # Observed meta-d'
         observed = self._compute_meta_d_prime(confidences, correctness)
@@ -222,6 +217,7 @@ class MetacognitiveAssessment:
         # Permutation test
         count_exceed = 0
         from random import shuffle
+
         perm_correctness = list(correctness)
 
         for _ in range(n_permutations):
@@ -248,6 +244,7 @@ class MetacognitiveAssessment:
     ) -> tuple:
         """Compute 95% bootstrap confidence interval for meta-d'."""
         from random import choices
+
         n = len(confidences)
         if n < 5:
             return (0.0, 0.0)

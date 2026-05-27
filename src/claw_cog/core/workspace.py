@@ -82,6 +82,7 @@ class GlobalWorkspace:
 
     def _add_default_subscribers(self) -> None:
         """Add default subscriber to ensure confidence > 0 per GWT."""
+
         def _gwt_baseline(content: Any) -> Dict[str, Any]:
             return {"received": True, "content_type": type(content).__name__}
 
@@ -96,9 +97,7 @@ class GlobalWorkspace:
             module: Callable that receives broadcast content
         """
         if len(self._subscribers) >= self.config.workspace_max_subscribers:
-            logger.warning(
-                f"Max subscribers ({self.config.workspace_max_subscribers}) reached"
-            )
+            logger.warning(f"Max subscribers ({self.config.workspace_max_subscribers}) reached")
             return
         self._subscribers.append(module)
         logger.debug(f"Module subscribed. Total: {len(self._subscribers)}")
@@ -108,12 +107,7 @@ class GlobalWorkspace:
         if module in self._subscribers:
             self._subscribers.remove(module)
 
-    def process(
-        self,
-        input: Any,
-        c0_output: Any,
-        context: Optional[Dict] = None
-    ) -> C1Result:
+    def process(self, input: Any, c0_output: Any, context: Optional[Dict] = None) -> C1Result:
         """
         Process input and broadcast to all subscribers.
 
@@ -156,9 +150,7 @@ class GlobalWorkspace:
             metadata={"broadcast_result": broadcast_result},
         )
 
-    def _integrate(
-        self, input: Any, c0_output: Any, context: Optional[Dict]
-    ) -> Any:
+    def _integrate(self, input: Any, c0_output: Any, context: Optional[Dict]) -> Any:
         """
         Integrate information from multiple sources.
 
@@ -256,8 +248,7 @@ class GlobalWorkspace:
         if not broadcast_result:
             return 0.0
         successful = sum(
-            1 for r in broadcast_result.values()
-            if isinstance(r, dict) and "error" not in r
+            1 for r in broadcast_result.values() if isinstance(r, dict) and "error" not in r
         )
         return successful / len(broadcast_result)
 
@@ -266,8 +257,8 @@ class GlobalWorkspace:
         self._total_broadcasts += 1
         n = self._total_broadcasts
         self._avg_broadcast_time_ms = (
-            (self._avg_broadcast_time_ms * (n - 1) + broadcast_time_ms) / n
-        )
+            self._avg_broadcast_time_ms * (n - 1) + broadcast_time_ms
+        ) / n
 
     def get_metrics(self) -> Dict[str, float]:
         """Get performance metrics."""

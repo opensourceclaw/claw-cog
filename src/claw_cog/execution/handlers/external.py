@@ -40,25 +40,30 @@ class ExternalActionHandler(ActionHandler):
         handler = method_map.get(action.action_type)
         if handler is None:
             return ActionResult.failure_result(
-                action.action_id, f"Unsupported external action: {action.action_type}",
+                action.action_id,
+                f"Unsupported external action: {action.action_type}",
             )
 
         try:
             start = datetime.now()
             output = handler(action, context)
             duration = (datetime.now() - start).total_seconds() * 1000
-            return ActionResult.success_result(action.action_id, output=output, duration_ms=duration)
+            return ActionResult.success_result(
+                action.action_id, output=output, duration_ms=duration
+            )
         except Exception as e:
             return ActionResult.failure_result(action.action_id, error=str(e))
 
     def rollback(self, action: Action, rollback_data: Dict[str, Any]) -> bool:
         # External actions are typically non-reversible
         # Log the rollback attempt
-        self._call_log.append({
-            "action_id": action.action_id,
-            "rollback_attempted": True,
-            "timestamp": datetime.now().isoformat(),
-        })
+        self._call_log.append(
+            {
+                "action_id": action.action_id,
+                "rollback_attempted": True,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
         return True
 
     def get_call_log(self) -> list:

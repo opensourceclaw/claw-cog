@@ -94,14 +94,16 @@ class ClawCogBridge:
             raise RuntimeError("Agent not initialized")
 
         text = params.get("text", "")
-        enable_c2 = params.get("enable_c2", True)
+        enable_vo = params.get("enable_c2", True)
 
-        result: ProcessingResult = self.agent.process(text, enable_c2=enable_c2)
+        result: ProcessingResult = self.agent.process(text, enable_vo=enable_vo)
 
         return {
             "output": result.output,
             "confidence": result.confidence,
-            "level": result.level.value if isinstance(result.level, ConsciousnessLevel) else result.level,
+            "level": result.level.value
+            if isinstance(result.level, ConsciousnessLevel)
+            else result.level,
         }
 
     def _analyze(self, params: Dict[str, Any]) -> Dict[str, Any]:
@@ -110,7 +112,7 @@ class ClawCogBridge:
             raise RuntimeError("Agent not initialized")
 
         text = params.get("text", "")
-        metrics = self.agent.assess_metacognition(text)
+        metrics = self.agent.assess_metacognition()
 
         return {"metrics": metrics}
 

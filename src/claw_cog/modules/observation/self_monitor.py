@@ -23,9 +23,7 @@ class SelfMonitor:
         self._history: Dict[str, Dict[str, List[float]]] = defaultdict(lambda: defaultdict(list))
         self._stats = {"observations_tracked": 0}
 
-    def track(
-        self, layer: str, metric: str, value: float, timestamp: Optional[str] = None
-    ):
+    def track(self, layer: str, metric: str, value: float, timestamp: Optional[str] = None):
         """Record a metric observation for a layer."""
         timestamp or datetime.now(timezone.utc).isoformat()
         values = self._history[layer][metric]

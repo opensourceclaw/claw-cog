@@ -1,4 +1,5 @@
 """Time Consciousness Module (ITCMA) — Retention/Impression/Protention for claw-cog v1.5.0.
+"""DEPRECATED: This module has zero external references and will be removed in v5.0. Use modules/temporal_*.py instead."""
 
 Based on Husserl's phenomenology: retention (past holding), impression (present),
 protention (future anticipation). Implements the ITCMA (Internal Time Consciousness
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class TimeSlice:
     """A single moment in the time consciousness stream."""
+
     timestamp: float = field(default_factory=time.time)
     content: Any = None
     retention_weight: float = 0.5  # how strongly it's retained
@@ -27,6 +29,7 @@ class TimeSlice:
 @dataclass
 class TimeConsciousnessResult:
     """Result of time consciousness processing."""
+
     retained_past: List[Dict[str, Any]] = field(default_factory=list)
     current_impression: Dict[str, Any] = field(default_factory=dict)
     protended_future: List[Dict[str, Any]] = field(default_factory=list)
@@ -54,23 +57,27 @@ class TimeConsciousnessModule:
 
     def retain(self, content: Any, weight: float = 0.5) -> None:
         """Hold a past experience in retention buffer."""
-        self._retention_buffer.append(TimeSlice(
-            content=content,
-            retention_weight=weight,
-            impression_intensity=weight,
-        ))
+        self._retention_buffer.append(
+            TimeSlice(
+                content=content,
+                retention_weight=weight,
+                impression_intensity=weight,
+            )
+        )
 
     def get_retained(self, lookback: int = 5) -> List[Dict[str, Any]]:
         """Get recent retained experiences with decay applied."""
         retained = []
         for i, ts in enumerate(reversed(list(self._retention_buffer)[-lookback:])):
             decayed = ts.retention_weight * (1.0 - self.decay_rate * i)
-            retained.append({
-                "content": ts.content,
-                "weight": round(max(0.0, decayed), 4),
-                "timestamp": ts.timestamp,
-                "age": i,
-            })
+            retained.append(
+                {
+                    "content": ts.content,
+                    "weight": round(max(0.0, decayed), 4),
+                    "timestamp": ts.timestamp,
+                    "age": i,
+                }
+            )
         return retained
 
     def get_retention_depth(self) -> int:
@@ -110,14 +117,17 @@ class TimeConsciousnessModule:
             if timestamps:
                 avg_interval = (
                     sum(timestamps[-3:]) / len(timestamps[-3:])
-                    if len(timestamps) >= 3 else timestamps[-1]
+                    if len(timestamps) >= 3
+                    else timestamps[-1]
                 )
                 relevance = 1.0 / max(0.1, avg_interval)
-                protentions.append({
-                    "pattern": pattern_name,
-                    "estimated_in": round(avg_interval / 1000, 2),
-                    "confidence": round(min(1.0, relevance), 4),
-                })
+                protentions.append(
+                    {
+                        "pattern": pattern_name,
+                        "estimated_in": round(avg_interval / 1000, 2),
+                        "confidence": round(min(1.0, relevance), 4),
+                    }
+                )
 
         # Sort by confidence
         protentions.sort(key=lambda x: x["confidence"], reverse=True)
@@ -138,8 +148,12 @@ class TimeConsciousnessModule:
         protended = self.protend(context)
 
         flow_score = self._compute_flow()
-        logger.debug("Time cycle: retention=%d protention=%d flow=%.2f",
-                     len(retained), len(protended), flow_score)
+        logger.debug(
+            "Time cycle: retention=%d protention=%d flow=%.2f",
+            len(retained),
+            len(protended),
+            flow_score,
+        )
 
         return TimeConsciousnessResult(
             retained_past=retained,
@@ -155,7 +169,7 @@ class TimeConsciousnessModule:
         recent = list(self._retention_buffer)[-5:]
         intervals = []
         for i in range(1, len(recent)):
-            intervals.append(recent[i].timestamp - recent[i-1].timestamp)
+            intervals.append(recent[i].timestamp - recent[i - 1].timestamp)
         if not intervals:
             return 0.5
         avg = sum(intervals) / len(intervals)

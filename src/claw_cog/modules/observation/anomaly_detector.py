@@ -86,9 +86,7 @@ class AnomalyDetector:
         return SeverityLevel.CRITICAL
 
     @staticmethod
-    def _get_expected(
-        layer: str, metric: str, baselines: Dict[str, Dict[str, float]]
-    ) -> float:
+    def _get_expected(layer: str, metric: str, baselines: Dict[str, Dict[str, float]]) -> float:
         return baselines.get(layer, {}).get(metric, 0.5)
 
 

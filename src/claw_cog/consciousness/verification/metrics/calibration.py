@@ -105,10 +105,7 @@ def accuracy_at_confidence(
         else:
             buckets["high"].append(out)
 
-    return {
-        key: sum(vals) / len(vals) if vals else 0.0
-        for key, vals in buckets.items()
-    }
+    return {key: sum(vals) / len(vals) if vals else 0.0 for key, vals in buckets.items()}
 
 
 def brier_score(

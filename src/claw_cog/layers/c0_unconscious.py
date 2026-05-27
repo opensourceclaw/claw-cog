@@ -46,6 +46,7 @@ class C0Unconscious:
         3. Form primal impression as fallback
         """
         from time import time
+
         self._call_count += 1
         start = time()
 
@@ -163,8 +164,7 @@ class C0Unconscious:
         return {
             "call_count": self._call_count,
             "avg_time_ms": (
-                self._total_time_ms / self._call_count
-                if self._call_count > 0 else 0.0
+                self._total_time_ms / self._call_count if self._call_count > 0 else 0.0
             ),
             "patterns_registered": len(self._patterns),
             "auto_responses_registered": len(self._auto_responses),

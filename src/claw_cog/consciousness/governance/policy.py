@@ -7,7 +7,9 @@ import logging
 
 from .boundary import SafetyBoundary, BoundaryDecision
 from .permission import (
-    PermissionController, PermissionDecision, Role,
+    PermissionController,
+    PermissionDecision,
+    Role,
 )
 from .audit import AuditLogger
 from .guardrails.input_filter import InputFilter
@@ -75,7 +77,9 @@ class PolicyEnforcer:
         self.behavior_constraint = BehaviorConstraint()
 
     def evaluate_input(
-        self, content: str, role: Role = Role.ASSISTANT,
+        self,
+        content: str,
+        role: Role = Role.ASSISTANT,
     ) -> PolicyResult:
         """Evaluate input content through governance.
 
@@ -95,7 +99,8 @@ class PolicyEnforcer:
         if not is_safe:
             self.audit.log("InputFilter", content[:50], "denied", reason)
             return PolicyResult(
-                allowed=False, decision=PolicyDecision.DENIED,
+                allowed=False,
+                decision=PolicyDecision.DENIED,
                 explanation=f"Input rejected: {reason}",
                 details={"filtered_content": filtered},
             )
@@ -104,12 +109,13 @@ class PolicyEnforcer:
         b_decision, b_reason = self.boundary.check(content)
         details["boundary"] = {"decision": b_decision.value, "reason": b_reason}
         if b_decision == BoundaryDecision.DENIED:
-            self.audit.log("SafetyBoundary", content[:50], "denied", b_reason,
-                          details)
+            self.audit.log("SafetyBoundary", content[:50], "denied", b_reason, details)
             return PolicyResult(
-                allowed=False, decision=PolicyDecision.DENIED,
+                allowed=False,
+                decision=PolicyDecision.DENIED,
                 explanation=b_reason,
-                boundary_decision=b_decision.value, details=details,
+                boundary_decision=b_decision.value,
+                details=details,
             )
 
         # Step 3: Permission check
@@ -119,21 +125,24 @@ class PolicyEnforcer:
             "risk": p_result.risk_level.value,
         }
         if p_result.decision == PermissionDecision.DENY:
-            self.audit.log("PermissionController", content[:50], "denied",
-                          p_result.reason, details)
+            self.audit.log("PermissionController", content[:50], "denied", p_result.reason, details)
             return PolicyResult(
-                allowed=False, decision=PolicyDecision.DENIED,
+                allowed=False,
+                decision=PolicyDecision.DENIED,
                 explanation=p_result.reason,
-                permission_decision=p_result.decision.value, details=details,
+                permission_decision=p_result.decision.value,
+                details=details,
             )
 
         # Final decision
-        if b_decision == BoundaryDecision.RESTRICTED or \
-           p_result.decision == PermissionDecision.WARN:
-            self.audit.log("PolicyEnforcer", content[:50], "restricted",
-                          b_reason, details)
+        if (
+            b_decision == BoundaryDecision.RESTRICTED
+            or p_result.decision == PermissionDecision.WARN
+        ):
+            self.audit.log("PolicyEnforcer", content[:50], "restricted", b_reason, details)
             return PolicyResult(
-                allowed=True, decision=PolicyDecision.RESTRICTED,
+                allowed=True,
+                decision=PolicyDecision.RESTRICTED,
                 explanation=f"Restricted: {b_reason}\n{p_result.reason}",
                 boundary_decision=b_decision.value,
                 permission_decision=p_result.decision.value,
@@ -142,7 +151,8 @@ class PolicyEnforcer:
 
         self.audit.log("PolicyEnforcer", content[:50], "allowed", "", details)
         return PolicyResult(
-            allowed=True, decision=PolicyDecision.ALLOWED,
+            allowed=True,
+            decision=PolicyDecision.ALLOWED,
             explanation="Input passed all governance checks",
             boundary_decision=b_decision.value,
             permission_decision=p_result.decision.value,
@@ -150,7 +160,9 @@ class PolicyEnforcer:
         )
 
     def evaluate_action(
-        self, operation: str, role: Role = Role.ASSISTANT,
+        self,
+        operation: str,
+        role: Role = Role.ASSISTANT,
         domain: str = "general",
     ) -> PolicyResult:
         """Evaluate an action/operation through governance.
@@ -170,8 +182,10 @@ class PolicyEnforcer:
         if not allowed:
             self.audit.log("BehaviorConstraint", operation, "denied", constraint_reason)
             return PolicyResult(
-                allowed=False, decision=PolicyDecision.DENIED,
-                explanation=constraint_reason, details=details,
+                allowed=False,
+                decision=PolicyDecision.DENIED,
+                explanation=constraint_reason,
+                details=details,
             )
 
         # Safety boundary
@@ -180,8 +194,10 @@ class PolicyEnforcer:
         if b_decision == BoundaryDecision.DENIED:
             self.audit.log("SafetyBoundary", operation, "denied", b_reason, details)
             return PolicyResult(
-                allowed=False, decision=PolicyDecision.DENIED,
-                explanation=b_reason, boundary_decision=b_decision.value,
+                allowed=False,
+                decision=PolicyDecision.DENIED,
+                explanation=b_reason,
+                boundary_decision=b_decision.value,
                 details=details,
             )
 
@@ -191,7 +207,8 @@ class PolicyEnforcer:
         if p_result.decision == PermissionDecision.DENY:
             self.audit.log("PermissionController", operation, "denied", p_result.reason)
             return PolicyResult(
-                allowed=False, decision=PolicyDecision.DENIED,
+                allowed=False,
+                decision=PolicyDecision.DENIED,
                 explanation=p_result.reason,
                 permission_decision=p_result.decision.value,
                 details=details,
@@ -199,7 +216,8 @@ class PolicyEnforcer:
 
         self.audit.log("PolicyEnforcer", operation, "allowed", "", details)
         return PolicyResult(
-            allowed=True, decision=PolicyDecision.ALLOWED,
+            allowed=True,
+            decision=PolicyDecision.ALLOWED,
             explanation="Action allowed",
             boundary_decision=b_decision.value,
             permission_decision=p_result.decision.value,
@@ -207,7 +225,8 @@ class PolicyEnforcer:
         )
 
     def evaluate_output(
-        self, content: str,
+        self,
+        content: str,
     ) -> PolicyResult:
         """Evaluate output content through governance.
 
@@ -221,14 +240,16 @@ class PolicyEnforcer:
         if not is_safe:
             self.audit.log("OutputFilter", content[:50], "denied", reason)
             return PolicyResult(
-                allowed=False, decision=PolicyDecision.DENIED,
+                allowed=False,
+                decision=PolicyDecision.DENIED,
                 explanation=f"Output rejected: {reason}",
                 details={"filtered_content": filtered},
             )
 
         self.audit.log("OutputFilter", content[:50], "allowed", "")
         return PolicyResult(
-            allowed=True, decision=PolicyDecision.ALLOWED,
+            allowed=True,
+            decision=PolicyDecision.ALLOWED,
             explanation="Output passed governance",
         )
 

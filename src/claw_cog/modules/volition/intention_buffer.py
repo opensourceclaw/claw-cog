@@ -25,7 +25,12 @@ class IntentionBuffer:
         """Get the highest-priority intention from the buffer."""
         if not self._buffer:
             return None
-        order = {GoalPriority.CRITICAL: 0, GoalPriority.HIGH: 1, GoalPriority.MEDIUM: 2, GoalPriority.LOW: 3}
+        order = {
+            GoalPriority.CRITICAL: 0,
+            GoalPriority.HIGH: 1,
+            GoalPriority.MEDIUM: 2,
+            GoalPriority.LOW: 3,
+        }
         return max(self._buffer, key=lambda i: (3 - order.get(i.priority, 0), i.confidence))
 
     def detect_conflicts(self) -> List[IntentionConflict]:
@@ -48,16 +53,19 @@ class IntentionBuffer:
         self._buffer.clear()
         self._stats = {"intentions_pushed": 0, "conflicts_detected": 0}
 
-    def _check_conflict(
-        self, a: Intention, b: Intention
-    ) -> Optional[IntentionConflict]:
+    def _check_conflict(self, a: Intention, b: Intention) -> Optional[IntentionConflict]:
         """Check if two intentions conflict (resource, priority, or semantic)."""
         # Same goal_id means they're complementary, not conflicting
         if a.goal_id == b.goal_id:
             return None
 
         # Priority inversion: lower-priority intention has higher confidence
-        prio_order = {GoalPriority.CRITICAL: 4, GoalPriority.HIGH: 3, GoalPriority.MEDIUM: 2, GoalPriority.LOW: 1}
+        prio_order = {
+            GoalPriority.CRITICAL: 4,
+            GoalPriority.HIGH: 3,
+            GoalPriority.MEDIUM: 2,
+            GoalPriority.LOW: 1,
+        }
         a_prio = prio_order.get(a.priority, 0)
         b_prio = prio_order.get(b.priority, 0)
 

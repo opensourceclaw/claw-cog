@@ -65,17 +65,17 @@ class InputFilter:
 
         # Length check
         if len(content) > self.max_input_length:
-            truncated = content[:self.max_input_length]
-            return False, truncated, (
-                f"Input exceeds max length ({len(content)} > {self.max_input_length})"
+            truncated = content[: self.max_input_length]
+            return (
+                False,
+                truncated,
+                (f"Input exceeds max length ({len(content)} > {self.max_input_length})"),
             )
 
         # Blocked patterns
         for pattern in self.BLOCKED_PATTERNS:
             if pattern.search(content):
-                return False, content[:50], (
-                    f"Input matches blocked pattern: {pattern.pattern}"
-                )
+                return False, content[:50], (f"Input matches blocked pattern: {pattern.pattern}")
 
         # Warning patterns — sanitize but allow
         filtered = content

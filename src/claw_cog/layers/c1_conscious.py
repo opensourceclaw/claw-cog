@@ -90,7 +90,7 @@ class C1Conscious:
                 cached = self._cached_contexts.get(content[:50])
                 if cached is not None:
                     return cached
-                result = self._memory_bridge.retrieve(query=content, top_k=3)
+                result = self._memory_bridge.retrieve_relevant(query=content, limit=3)
                 if result:
                     self._cached_contexts[content[:50]] = result
                     return result

@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 # Try to import claw-mem
 try:
     from claw_mem import MemoryManager
+
     HAS_CLAW_MEM = True
 except ImportError:
     HAS_CLAW_MEM = False
@@ -91,9 +92,7 @@ class ClawMemBridge:
 
         valid_types = {"episodic", "semantic", "procedural", "critical_rule"}
         if mapped_type not in valid_types:
-            logger.warning(
-                f"Unknown memory type: {memory_type}, falling back to episodic"
-            )
+            logger.warning(f"Unknown memory type: {memory_type}, falling back to episodic")
             mapped_type = "episodic"
 
         try:
@@ -111,13 +110,15 @@ class ClawMemBridge:
                 if mapped_type not in self._memory_fallback:
                     self._memory_fallback[mapped_type] = []
 
-                self._memory_fallback[mapped_type].append({
-                    "content": content,
-                    "metadata": {
-                        "original_type": memory_type,
-                        **(metadata or {}),
-                    },
-                })
+                self._memory_fallback[mapped_type].append(
+                    {
+                        "content": content,
+                        "metadata": {
+                            "original_type": memory_type,
+                            **(metadata or {}),
+                        },
+                    }
+                )
 
             logger.debug(f"Stored {memory_type} (as {mapped_type}): {str(content)[:50]}...")
             return True
@@ -169,11 +170,13 @@ class ClawMemBridge:
                     for entry in self._memory_fallback[mem_type]:
                         content = str(entry.get("content", ""))
                         if query.lower() in content.lower():
-                            results.append({
-                                "content": content,
-                                "type": mem_type,
-                                "score": 0.5,  # Default score
-                            })
+                            results.append(
+                                {
+                                    "content": content,
+                                    "type": mem_type,
+                                    "score": 0.5,  # Default score
+                                }
+                            )
 
                 return results[:limit]
 
@@ -328,9 +331,7 @@ class ClawMemBridge:
                         "metadata": r.get("metadata", {}),
                     }
                     for r in results
-                    if start_time <= datetime.fromtimestamp(
-                        r.get("timestamp", 0)
-                    ) <= end_time
+                    if start_time <= datetime.fromtimestamp(r.get("timestamp", 0)) <= end_time
                 ]
                 return filtered[:limit]
             else:
@@ -346,11 +347,13 @@ class ClawMemBridge:
                             try:
                                 entry_time = datetime.fromtimestamp(ts)
                                 if start_time <= entry_time <= end_time:
-                                    results.append({
-                                        "content": entry.get("content", ""),
-                                        "type": mem_type,
-                                        "metadata": entry.get("metadata", {}),
-                                    })
+                                    results.append(
+                                        {
+                                            "content": entry.get("content", ""),
+                                            "type": mem_type,
+                                            "metadata": entry.get("metadata", {}),
+                                        }
+                                    )
                             except (OSError, ValueError):
                                 continue
                 return results[:limit]

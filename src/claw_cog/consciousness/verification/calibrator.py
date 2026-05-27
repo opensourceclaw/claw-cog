@@ -17,9 +17,9 @@ logger = logging.getLogger(__name__)
 class CalibrationBin(Enum):
     """Confidence bins for calibration analysis."""
 
-    LOW = "low"        # < 0.5
+    LOW = "low"  # < 0.5
     MEDIUM = "medium"  # 0.5 – 0.8
-    HIGH = "high"       # > 0.8
+    HIGH = "high"  # > 0.8
 
 
 @dataclass
@@ -68,8 +68,7 @@ class ConfidenceCalibrator:
         self.ece_threshold = ece_threshold
         self.num_bins = num_bins
 
-    def calibrate(self, confidences: List[float],
-                  outcomes: List[int]) -> CalibrationResult:
+    def calibrate(self, confidences: List[float], outcomes: List[int]) -> CalibrationResult:
         """Run calibration analysis on confidence-outcome pairs.
 
         Args:

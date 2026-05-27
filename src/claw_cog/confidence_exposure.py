@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ConfidenceReport:
     """User-visible confidence report."""
+
     confidence: float
     level: str
     recommendation: str = ""

@@ -77,9 +77,7 @@ class ObservationEngine:
         baselines: Dict[str, Dict[str, float]] = {}
         for obs in observations:
             baselines.setdefault(obs.layer, {})
-            baselines[obs.layer][obs.metric] = self.monitor.get_baseline(
-                obs.layer, obs.metric
-            )
+            baselines[obs.layer][obs.metric] = self.monitor.get_baseline(obs.layer, obs.metric)
 
         anomalies = self.detector.detect(observations, baselines)
         self._stats["anomalies_detected"] += len(anomalies)

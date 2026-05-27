@@ -41,9 +41,7 @@ class LayerManager:
         self.c2 = C2Metacognitive(config) if enable_c2 else None
 
         self.c2_enabled = enable_c2
-        logger.info(
-            f"LayerManager initialized: C0 ✓, C1 ✓, C2 {'✓' if enable_c2 else '✗'}"
-        )
+        logger.info(f"LayerManager initialized: C0 ✓, C1 ✓, C2 {'✓' if enable_c2 else '✗'}")
 
     def has_feedback_loops(self) -> bool:
         """Check if feedback loops exist (RPT indicator)."""

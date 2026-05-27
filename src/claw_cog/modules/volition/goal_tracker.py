@@ -56,10 +56,14 @@ class GoalTracker:
 
     def get_active(self) -> List[Goal]:
         """Return all goals that are PENDING or ACTIVE, sorted by priority."""
-        order = {GoalPriority.CRITICAL: 0, GoalPriority.HIGH: 1, GoalPriority.MEDIUM: 2, GoalPriority.LOW: 3}
+        order = {
+            GoalPriority.CRITICAL: 0,
+            GoalPriority.HIGH: 1,
+            GoalPriority.MEDIUM: 2,
+            GoalPriority.LOW: 3,
+        }
         active = [
-            g for g in self._goals.values()
-            if g.status in (GoalStatus.PENDING, GoalStatus.ACTIVE)
+            g for g in self._goals.values() if g.status in (GoalStatus.PENDING, GoalStatus.ACTIVE)
         ]
         active.sort(key=lambda g: order.get(g.priority, 99))
         return active
@@ -111,16 +115,15 @@ class GoalTracker:
 
     def _evict_lowest_priority(self):
         """Remove the lowest-priority pending goal to make room."""
-        order = {GoalPriority.CRITICAL: 4, GoalPriority.HIGH: 3, GoalPriority.MEDIUM: 2, GoalPriority.LOW: 1}
-        pending = [
-            (gid, g) for gid, g in self._goals.items()
-            if g.status == GoalStatus.PENDING
-        ]
+        order = {
+            GoalPriority.CRITICAL: 4,
+            GoalPriority.HIGH: 3,
+            GoalPriority.MEDIUM: 2,
+            GoalPriority.LOW: 1,
+        }
+        pending = [(gid, g) for gid, g in self._goals.items() if g.status == GoalStatus.PENDING]
         if not pending:
-            active = [
-                (gid, g) for gid, g in self._goals.items()
-                if g.status == GoalStatus.ACTIVE
-            ]
+            active = [(gid, g) for gid, g in self._goals.items() if g.status == GoalStatus.ACTIVE]
             pending = active
         if pending:
             lowest = min(pending, key=lambda x: order.get(x[1].priority, 0))

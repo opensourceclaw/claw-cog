@@ -49,11 +49,13 @@ class RollbackManager:
         snapshot = self._snapshots.pop(action_id, None)
         if snapshot is None:
             return False
-        self._rollback_log.append({
-            "action_id": action_id,
-            "snapshot": snapshot,
-            "status": "rolled_back",
-        })
+        self._rollback_log.append(
+            {
+                "action_id": action_id,
+                "snapshot": snapshot,
+                "status": "rolled_back",
+            }
+        )
         return True
 
     def rollback_all(self) -> int:

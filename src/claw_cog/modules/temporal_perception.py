@@ -16,19 +16,22 @@ from enum import Enum
 
 # ── Data Types ─────────────────────────────────────────────────────────────────
 
+
 class EventType(Enum):
     """Types of temporal events."""
+
     INSTANTANEOUS = "instantaneous"  # Single moment (e.g., "now")
-    DURATION = "duration"            # Time span (e.g., "2 hours")
-    RECURRING = "recurring"          # Repeated (e.g., "every day")
-    DEADLINE = "deadline"            # Future point (e.g., "by Friday")
+    DURATION = "duration"  # Time span (e.g., "2 hours")
+    RECURRING = "recurring"  # Repeated (e.g., "every day")
+    DEADLINE = "deadline"  # Future point (e.g., "by Friday")
 
 
 @dataclass
 class TemporalEvent:
     """A detected temporal event."""
+
     event_type: EventType
-    reference: str             # Original text or timestamp
+    reference: str  # Original text or timestamp
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
     duration_seconds: Optional[float] = None
@@ -50,10 +53,11 @@ class TemporalEvent:
 @dataclass
 class DurationEstimate:
     """Estimated duration for a task."""
-    expected: float            # Expected duration in seconds
-    confidence: float          # 0.0-1.0
-    range_min: float = 0.0     # Lower bound
-    range_max: float = 0.0     # Upper bound
+
+    expected: float  # Expected duration in seconds
+    confidence: float  # 0.0-1.0
+    range_min: float = 0.0  # Lower bound
+    range_max: float = 0.0  # Upper bound
     similar_task_count: int = 0
 
     def to_dict(self) -> dict:
@@ -67,6 +71,7 @@ class DurationEstimate:
 
 
 # ── TemporalPerception ─────────────────────────────────────────────────────────
+
 
 class TemporalPerception:
     """C0: Enhanced temporal perception.
@@ -88,22 +93,23 @@ class TemporalPerception:
         (r"(\d+)\s*(minutes?|mins?|分钟)", "duration", "minutes"),
         (r"(\d+)\s*(days?|天)", "duration", "days"),
         (r"(\d+)\s*(weeks?|周|星期)", "duration", "weeks"),
-
         # Recurring patterns
         (r"every\s+(day|morning|night|evening)", "recurring", "daily"),
         (r"每天|每日", "recurring", "daily"),
-        (r"every\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)", "recurring", "weekly"),
+        (
+            r"every\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)",
+            "recurring",
+            "weekly",
+        ),
         (r"every\s+week", "recurring", "weekly"),
         (r"每周", "recurring", "weekly"),
         (r"every\s+month", "recurring", "monthly"),
         (r"每月", "recurring", "monthly"),
-
         # Deadline expressions
         (r"by\s+(tomorrow|next\s+\w+|monday|tuesday|friday)", "deadline", ""),
         (r"due\s+(tomorrow|next\s+\w+|today|tonight)", "deadline", ""),
         (r"(明天|后天|下周|下个月)之前", "deadline", ""),
         (r"deadline[:：]\s*(.+)", "deadline", ""),
-
         # Instantaneous
         (r"(now|right now|immediately|asap)", "instantaneous", ""),
         (r"(现在|马上|立刻|立即)", "instantaneous", ""),
@@ -111,16 +117,16 @@ class TemporalPerception:
 
     # Default duration estimates by task category (in seconds)
     DEFAULT_DURATIONS: Dict[str, float] = {
-        "development": 7200.0,       # 2 hours
-        "review": 1800.0,            # 30 minutes
-        "testing": 3600.0,           # 1 hour
-        "deployment": 900.0,         # 15 minutes
-        "documentation": 1800.0,     # 30 minutes
-        "meeting": 3600.0,           # 1 hour
-        "analysis": 2700.0,          # 45 minutes
-        "planning": 1800.0,          # 30 minutes
-        "writing": 2700.0,           # 45 minutes
-        "research": 5400.0,          # 1.5 hours
+        "development": 7200.0,  # 2 hours
+        "review": 1800.0,  # 30 minutes
+        "testing": 3600.0,  # 1 hour
+        "deployment": 900.0,  # 15 minutes
+        "documentation": 1800.0,  # 30 minutes
+        "meeting": 3600.0,  # 1 hour
+        "analysis": 2700.0,  # 45 minutes
+        "planning": 1800.0,  # 30 minutes
+        "writing": 2700.0,  # 45 minutes
+        "research": 5400.0,  # 1.5 hours
     }
 
     def __init__(self, memory=None):
@@ -199,9 +205,7 @@ class TemporalPerception:
             similar_task_count=0,
         )
 
-    def recognize_sequences(
-        self, events: List[TemporalEvent]
-    ) -> List[List[TemporalEvent]]:
+    def recognize_sequences(self, events: List[TemporalEvent]) -> List[List[TemporalEvent]]:
         """Recognize time-based sequences from events.
 
         Groups events that have temporal ordering relationships.
@@ -246,9 +250,7 @@ class TemporalPerception:
     # ── Private ────────────────────────────────────────────────────────────────
 
     @staticmethod
-    def _build_event(
-        event_type: str, match: re.Match, extra: str, original: str
-    ) -> TemporalEvent:
+    def _build_event(event_type: str, match: re.Match, extra: str, original: str) -> TemporalEvent:
         """Build a TemporalEvent from regex match."""
         now = datetime.now()
 
@@ -262,10 +264,18 @@ class TemporalPerception:
             value = int(match.group(1))
             unit = match.group(2).lower()
             multipliers = {
-                "hours": 3600, "hrs": 3600, "小时": 3600, "个小时": 3600,
-                "minutes": 60, "mins": 60, "分钟": 60,
-                "days": 86400, "天": 86400,
-                "weeks": 604800, "周": 604800, "星期": 604800,
+                "hours": 3600,
+                "hrs": 3600,
+                "小时": 3600,
+                "个小时": 3600,
+                "minutes": 60,
+                "mins": 60,
+                "分钟": 60,
+                "days": 86400,
+                "天": 86400,
+                "weeks": 604800,
+                "周": 604800,
+                "星期": 604800,
             }
             for key, mult in multipliers.items():
                 if key in unit:
@@ -283,8 +293,8 @@ class TemporalPerception:
 
 
 __all__ = [
-    'TemporalPerception',
-    'TemporalEvent',
-    'DurationEstimate',
-    'EventType',
+    "TemporalPerception",
+    "TemporalEvent",
+    "DurationEstimate",
+    "EventType",
 ]

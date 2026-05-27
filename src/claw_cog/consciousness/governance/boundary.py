@@ -105,7 +105,9 @@ class SafetyBoundary:
         return False
 
     def check(
-        self, operation: str, domain: str = "general",
+        self,
+        operation: str,
+        domain: str = "general",
         context: Optional[Dict] = None,
     ) -> tuple:
         """Check if an operation is within safe bounds.
@@ -128,8 +130,7 @@ class SafetyBoundary:
             for denied in rule.denied_operations:
                 if denied.lower() in op_lower:
                     return BoundaryDecision.DENIED, (
-                        f"Operation '{operation}' denied by rule "
-                        f"'{rule.name}': {rule.description}"
+                        f"Operation '{operation}' denied by rule '{rule.name}': {rule.description}"
                     )
 
             # Check restricted patterns

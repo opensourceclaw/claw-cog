@@ -57,8 +57,10 @@ class OutputFilter:
         # Check sensitive patterns — reject entirely
         for pattern in self.SENSITIVE_PATTERNS:
             if pattern.search(filtered):
-                return False, content[:50], (
-                    f"Output contains sensitive data matching: {pattern.pattern}"
+                return (
+                    False,
+                    content[:50],
+                    (f"Output contains sensitive data matching: {pattern.pattern}"),
                 )
 
         # Sanitize patterns — replace with placeholder

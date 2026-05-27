@@ -38,9 +38,7 @@ class BehaviorConstraint:
 
     def __init__(self):
         self._denied_operations: Set[str] = set(self.DEFAULT_DENIED_OPERATIONS)
-        self._denied_patterns: List[re.Pattern] = list(
-            self.DEFAULT_DENIED_PATTERNS
-        )
+        self._denied_patterns: List[re.Pattern] = list(self.DEFAULT_DENIED_PATTERNS)
 
     def deny_operation(self, operation_type: str, pattern: Optional[str] = None) -> None:
         """Add an operation type to the deny list.
@@ -81,16 +79,12 @@ class BehaviorConstraint:
         """
         # Check explicit deny list
         if operation_type and operation_type in self._denied_operations:
-            return False, (
-                f"Operation type '{operation_type}' is explicitly denied"
-            )
+            return False, (f"Operation type '{operation_type}' is explicitly denied")
 
         # Check denied patterns
         for pattern in self._denied_patterns:
             if pattern.search(operation):
-                return False, (
-                    f"Operation matches denied pattern: {pattern.pattern}"
-                )
+                return False, (f"Operation matches denied pattern: {pattern.pattern}")
 
         return True, None
 

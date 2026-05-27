@@ -44,8 +44,7 @@ class ConsistencyChecker:
         """
         self.deviation_threshold = deviation_threshold
 
-    def check(self, result: Any,
-              history: Optional[List[Any]] = None) -> ConsistencyResult:
+    def check(self, result: Any, history: Optional[List[Any]] = None) -> ConsistencyResult:
         """Check output consistency against historical results.
 
         Args:
@@ -74,15 +73,10 @@ class ConsistencyChecker:
 
             # Check for direct contradictions
             if self._has_contradiction(current_text, past_text):
-                contradictions.append(
-                    f"Output contradicts history item {i}: "
-                    f"{past_text[:80]}..."
-                )
+                contradictions.append(f"Output contradicts history item {i}: {past_text[:80]}...")
 
         # Compute deviation score based on contradiction ratio
-        deviation_score = (
-            len(contradictions) / len(history) if history else 0.0
-        )
+        deviation_score = len(contradictions) / len(history) if history else 0.0
         is_consistent = deviation_score <= self.deviation_threshold
 
         return ConsistencyResult(
@@ -132,8 +126,9 @@ class ConsistencyChecker:
                     return True
 
                 # Also check: is the past text a substring of cleaned or vice versa
-                if (past_normalized in cleaned or cleaned in past_normalized) and \
-                   abs(len(cleaned) - len(past_normalized)) < 20:
+                if (past_normalized in cleaned or cleaned in past_normalized) and abs(
+                    len(cleaned) - len(past_normalized)
+                ) < 20:
                     return True
 
         return False

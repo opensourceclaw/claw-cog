@@ -78,9 +78,7 @@ class Config:
     def from_dict(cls, config_dict: Dict[str, Any]) -> "Config":
         """Create config from dictionary."""
         if not isinstance(config_dict, dict):
-            raise ConfigurationError(
-                f"Expected a dict, got {type(config_dict).__name__}"
-            )
+            raise ConfigurationError(f"Expected a dict, got {type(config_dict).__name__}")
         return cls(**{k: v for k, v in config_dict.items() if hasattr(cls, k)})
 
     def to_dict(self) -> Dict[str, Any]:

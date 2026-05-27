@@ -48,19 +48,23 @@ class ActionResult:
         )
 
     @staticmethod
-    def success_result(action_id: str, output: Any = None,
-                       duration_ms: float = 0.0) -> "ActionResult":
+    def success_result(
+        action_id: str, output: Any = None, duration_ms: float = 0.0
+    ) -> "ActionResult":
         """Factory for successful results."""
         return ActionResult(
-            action_id=action_id, success=True, output=output,
+            action_id=action_id,
+            success=True,
+            output=output,
             duration_ms=duration_ms,
         )
 
     @staticmethod
-    def failure_result(action_id: str, error: str = "",
-                       duration_ms: float = 0.0) -> "ActionResult":
+    def failure_result(action_id: str, error: str = "", duration_ms: float = 0.0) -> "ActionResult":
         """Factory for failed results."""
         return ActionResult(
-            action_id=action_id, success=False, error=error,
+            action_id=action_id,
+            success=False,
+            error=error,
             duration_ms=duration_ms,
         )

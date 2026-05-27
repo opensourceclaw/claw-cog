@@ -56,8 +56,7 @@ class QualityAssessor:
         self.safety_threshold = safety_threshold
         self.relevance_threshold = relevance_threshold
 
-    def assess(self, output: Any,
-               context: Optional[Dict] = None) -> QualityResult:
+    def assess(self, output: Any, context: Optional[Dict] = None) -> QualityResult:
         """Assess the quality of an output across all dimensions.
 
         Args:
@@ -73,18 +72,18 @@ class QualityAssessor:
         scores: Dict[str, QualityScore] = {}
         details: Dict[str, str] = {}
 
-        scores["completeness"], details["completeness"] = self._check_completeness(
-            output, context
-        )
+        scores["completeness"], details["completeness"] = self._check_completeness(output, context)
         scores["clarity"], details["clarity"] = self._check_clarity(output)
         scores["safety"], details["safety"] = self._check_safety(output)
-        scores["relevance"], details["relevance"] = self._check_relevance(
-            output, context
-        )
+        scores["relevance"], details["relevance"] = self._check_relevance(output, context)
 
         # Overall score is the worst across all dimensions
-        priority_order = [QualityScore.POOR, QualityScore.FAIR,
-                          QualityScore.GOOD, QualityScore.EXCELLENT]
+        priority_order = [
+            QualityScore.POOR,
+            QualityScore.FAIR,
+            QualityScore.GOOD,
+            QualityScore.EXCELLENT,
+        ]
         overall = QualityScore.EXCELLENT
         for score in scores.values():
             if priority_order.index(score) < priority_order.index(overall):

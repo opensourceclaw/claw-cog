@@ -1,4 +1,5 @@
 """Predictive Processing Module — prediction, error, update for claw-cog v1.5.0.
+"""DEPRECATED: This module has zero external references and will be removed in v5.0."""
 
 Based on the Bayesian brain hypothesis: the agent maintains an internal model,
 generates predictions, computes prediction errors, and updates the model.
@@ -16,6 +17,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class Prediction:
     """A single prediction from the internal model."""
+
     target: str
     expected_value: float
     confidence: float = 0.5
@@ -25,6 +27,7 @@ class Prediction:
 @dataclass
 class PredictionError:
     """Computed prediction error."""
+
     target: str
     predicted: float
     actual: float
@@ -35,6 +38,7 @@ class PredictionError:
 @dataclass
 class PredictiveResult:
     """Result of predictive processing cycle."""
+
     predictions: List[Dict[str, Any]] = field(default_factory=list)
     errors: List[Dict[str, Any]] = field(default_factory=list)
     mse: float = 0.0
@@ -82,7 +86,9 @@ class PredictiveProcessingModule:
         history = self._history.get(target, [])
         confidence = 0.5
         if len(history) >= 3:
-            variance = sum((x - model_entry["mean"])**2 for x in history[-10:]) / min(10, len(history))
+            variance = sum((x - model_entry["mean"]) ** 2 for x in history[-10:]) / min(
+                10, len(history)
+            )
             confidence = max(0.1, 1.0 - math.sqrt(variance) / (abs(model_entry["mean"]) + 0.001))
         return Prediction(
             target=target,
@@ -126,10 +132,18 @@ class PredictiveProcessingModule:
             if key in self._model:
                 pred = self.predict(key)
                 if pred:
-                    predictions.append({"target": key, "expected": pred.expected_value, "confidence": pred.confidence})
+                    predictions.append(
+                        {
+                            "target": key,
+                            "expected": pred.expected_value,
+                            "confidence": pred.confidence,
+                        }
+                    )
                     err = self.compute_error(key, observation[key])
                     if err:
-                        errors.append({"target": key, "error": err.error, "squared_error": err.squared_error})
+                        errors.append(
+                            {"target": key, "error": err.error, "squared_error": err.squared_error}
+                        )
 
         # Update model
         self.update_model(observation)
@@ -150,4 +164,8 @@ class PredictiveProcessingModule:
     def get_accuracy(self) -> float:
         if not self._prediction_history:
             return 0.0
-        return round(sum(r.accuracy for r in self._prediction_history[-20:]) / min(20, len(self._prediction_history)), 4)
+        return round(
+            sum(r.accuracy for r in self._prediction_history[-20:])
+            / min(20, len(self._prediction_history)),
+            4,
+        )

@@ -15,22 +15,25 @@ from enum import Enum
 
 # ── Data Types ─────────────────────────────────────────────────────────────────
 
+
 class ConflictType(Enum):
     """Types of temporal conflicts."""
-    OVERLAP = "overlap"       # Two events at overlapping times
-    RESOURCE = "resource"     # Insufficient resources
-    DEADLINE = "deadline"     # Cannot meet deadline
+
+    OVERLAP = "overlap"  # Two events at overlapping times
+    RESOURCE = "resource"  # Insufficient resources
+    DEADLINE = "deadline"  # Cannot meet deadline
 
 
 @dataclass
 class PredictedEvent:
     """A predicted future event."""
+
     description: str
     predicted_time: datetime
     duration_seconds: float = 0.0
     confidence: float = 0.5
-    resource_need: float = 1.0    # 0.0-1.0 normalized resource requirement
-    source_pattern: Optional['TemporalPattern'] = None
+    resource_need: float = 1.0  # 0.0-1.0 normalized resource requirement
+    source_pattern: Optional["TemporalPattern"] = None
 
     def to_dict(self) -> dict:
         return {
@@ -45,10 +48,11 @@ class PredictedEvent:
 @dataclass
 class TemporalConflict:
     """A detected temporal conflict."""
+
     conflict_type: ConflictType
     description: str
     events: List[PredictedEvent] = field(default_factory=list)
-    severity: str = "medium"   # low / medium / high
+    severity: str = "medium"  # low / medium / high
     suggested_resolution: Optional[str] = None
 
     def to_dict(self) -> dict:
@@ -64,8 +68,9 @@ class TemporalConflict:
 @dataclass
 class ResolutionSuggestion:
     """A suggestion for resolving a temporal conflict."""
+
     conflict: TemporalConflict
-    strategy: str             # "reschedule", "allocate", "escalate"
+    strategy: str  # "reschedule", "allocate", "escalate"
     alternatives: List[dict] = field(default_factory=list)
     details: str = ""
     feasibility: float = 0.5  # 0.0-1.0
@@ -81,6 +86,7 @@ class ResolutionSuggestion:
 
 
 # ── TemporalPrediction ─────────────────────────────────────────────────────────
+
 
 class TemporalPrediction:
     """C2: Temporal prediction and conflict detection.
@@ -110,7 +116,7 @@ class TemporalPrediction:
 
     def predict_future_events(
         self,
-        patterns: List['TemporalPattern'],
+        patterns: List["TemporalPattern"],
         horizon: Optional[timedelta] = None,
     ) -> List[PredictedEvent]:
         """Predict future events within the given horizon.
@@ -130,9 +136,7 @@ class TemporalPrediction:
         predictions = []
 
         for pattern in patterns:
-            next_times = self._predict_next_occurrences(
-                pattern, now, horizon_end
-            )
+            next_times = self._predict_next_occurrences(pattern, now, horizon_end)
 
             for pred_time in next_times:
                 event = PredictedEvent(
@@ -153,7 +157,7 @@ class TemporalPrediction:
     def detect_conflicts(
         self,
         predictions: List[PredictedEvent],
-        existing_schedule: Optional[List['ScheduleEntry']] = None,
+        existing_schedule: Optional[List["ScheduleEntry"]] = None,
     ) -> List[TemporalConflict]:
         """Detect temporal conflicts among predictions.
 
@@ -183,12 +187,14 @@ class TemporalPrediction:
                 if self._check_overlap(e1, e2):
                     severity = "high" if e1.confidence > 0.7 and e2.confidence > 0.7 else "medium"
 
-                    conflicts.append(TemporalConflict(
-                        conflict_type=ConflictType.OVERLAP,
-                        description=f"Overlap: '{e1.description}' and '{e2.description}'",
-                        events=[e1, e2],
-                        severity=severity,
-                    ))
+                    conflicts.append(
+                        TemporalConflict(
+                            conflict_type=ConflictType.OVERLAP,
+                            description=f"Overlap: '{e1.description}' and '{e2.description}'",
+                            events=[e1, e2],
+                            severity=severity,
+                        )
+                    )
 
         # Check for resource over-allocation
         resource_conflicts = self._check_resource_conflicts(sorted_events)
@@ -203,9 +209,7 @@ class TemporalPrediction:
 
         return conflicts
 
-    def suggest_resolution(
-        self, conflicts: List[TemporalConflict]
-    ) -> List[ResolutionSuggestion]:
+    def suggest_resolution(self, conflicts: List[TemporalConflict]) -> List[ResolutionSuggestion]:
         """Suggest resolution strategies for conflicts.
 
         Args:
@@ -254,7 +258,7 @@ class TemporalPrediction:
 
     @staticmethod
     def _predict_next_occurrences(
-        pattern: 'TemporalPattern',
+        pattern: "TemporalPattern",
         start: datetime,
         horizon: datetime,
     ) -> List[datetime]:
@@ -287,7 +291,7 @@ class TemporalPrediction:
         return occurrences
 
     @staticmethod
-    def _estimate_resource_need(pattern: 'TemporalPattern') -> float:
+    def _estimate_resource_need(pattern: "TemporalPattern") -> float:
         """Estimate resource needed for a pattern-based event."""
         if pattern.event_count < 3:
             return 0.5
@@ -308,9 +312,7 @@ class TemporalPrediction:
         # Overlap if intervals intersect
         return e1_start < e2_end and e2_start < e1_end
 
-    def _check_resource_conflicts(
-        self, events: List[PredictedEvent]
-    ) -> List[TemporalConflict]:
+    def _check_resource_conflicts(self, events: List[PredictedEvent]) -> List[TemporalConflict]:
         """Check for resource over-allocation in a time window."""
         conflicts = []
 
@@ -318,25 +320,24 @@ class TemporalPrediction:
         now = datetime.now()
         window_end = now + timedelta(hours=1)
         window_events = [
-            e for e in events
-            if e.predicted_time and now <= e.predicted_time < window_end
+            e for e in events if e.predicted_time and now <= e.predicted_time < window_end
         ]
 
         total_resource = sum(e.resource_need for e in window_events)
         if total_resource > self.resource_capacity * 1.2:
-            conflicts.append(TemporalConflict(
-                conflict_type=ConflictType.RESOURCE,
-                description=f"Resource over-allocation ({total_resource:.1f} > {self.resource_capacity})",
-                events=window_events,
-                severity="medium" if total_resource < self.resource_capacity * 1.5 else "high",
-            ))
+            conflicts.append(
+                TemporalConflict(
+                    conflict_type=ConflictType.RESOURCE,
+                    description=f"Resource over-allocation ({total_resource:.1f} > {self.resource_capacity})",
+                    events=window_events,
+                    severity="medium" if total_resource < self.resource_capacity * 1.5 else "high",
+                )
+            )
 
         return conflicts
 
     @staticmethod
-    def _check_deadline_conflicts(
-        events: List[PredictedEvent]
-    ) -> List[TemporalConflict]:
+    def _check_deadline_conflicts(events: List[PredictedEvent]) -> List[TemporalConflict]:
         """Check for deadline pressure conflicts."""
         conflicts = []
 
@@ -351,30 +352,32 @@ class TemporalPrediction:
 
             required = e.duration_seconds
             if required > 0 and remaining < required * 1.5:
-                conflicts.append(TemporalConflict(
-                    conflict_type=ConflictType.DEADLINE,
-                    description=f"Deadline risk: insufficient time for '{e.description}'",
-                    events=[e],
-                    severity="high",
-                ))
+                conflicts.append(
+                    TemporalConflict(
+                        conflict_type=ConflictType.DEADLINE,
+                        description=f"Deadline risk: insufficient time for '{e.description}'",
+                        events=[e],
+                        severity="high",
+                    )
+                )
 
         return conflicts
 
     @staticmethod
-    def _suggest_overlap_resolution(
-        conflict: TemporalConflict
-    ) -> ResolutionSuggestion:
+    def _suggest_overlap_resolution(conflict: TemporalConflict) -> ResolutionSuggestion:
         """Suggest resolution for overlapping events."""
         alternatives = []
         if len(conflict.events) >= 2:
             # Suggest moving later event back
             later = max(conflict.events, key=lambda e: e.predicted_time)
             later_time = later.predicted_time + timedelta(hours=1)
-            alternatives.append({
-                "action": "reschedule",
-                "event": later.description,
-                "suggested_time": later_time.isoformat(),
-            })
+            alternatives.append(
+                {
+                    "action": "reschedule",
+                    "event": later.description,
+                    "suggested_time": later_time.isoformat(),
+                }
+            )
 
         return ResolutionSuggestion(
             conflict=conflict,
@@ -385,22 +388,20 @@ class TemporalPrediction:
         )
 
     @staticmethod
-    def _suggest_resource_resolution(
-        conflict: TemporalConflict
-    ) -> ResolutionSuggestion:
+    def _suggest_resource_resolution(conflict: TemporalConflict) -> ResolutionSuggestion:
         """Suggest resolution for resource conflicts."""
         return ResolutionSuggestion(
             conflict=conflict,
             strategy="allocate",
-            alternatives=[{"action": "prioritize", "details": "Focus on highest-priority events first"}],
+            alternatives=[
+                {"action": "prioritize", "details": "Focus on highest-priority events first"}
+            ],
             details="Prioritize events and defer lower-priority ones to avoid resource contention.",
             feasibility=0.6,
         )
 
     @staticmethod
-    def _suggest_deadline_resolution(
-        conflict: TemporalConflict
-    ) -> ResolutionSuggestion:
+    def _suggest_deadline_resolution(conflict: TemporalConflict) -> ResolutionSuggestion:
         """Suggest resolution for deadline conflicts."""
         return ResolutionSuggestion(
             conflict=conflict,
@@ -416,9 +417,9 @@ class TemporalPrediction:
 
 
 __all__ = [
-    'TemporalPrediction',
-    'PredictedEvent',
-    'TemporalConflict',
-    'ResolutionSuggestion',
-    'ConflictType',
+    "TemporalPrediction",
+    "PredictedEvent",
+    "TemporalConflict",
+    "ResolutionSuggestion",
+    "ConflictType",
 ]

@@ -34,9 +34,7 @@ class VolitionEngine:
         self.memory = memory
         self._stats = {"goals_generated": 0, "intentions_selected": 0}
 
-    def generate_goals(
-        self, c2_result, context: Optional[Dict[str, Any]] = None
-    ) -> List[Goal]:
+    def generate_goals(self, c2_result, context: Optional[Dict[str, Any]] = None) -> List[Goal]:
         """
         Generate goals from C2 metacognitive results.
 

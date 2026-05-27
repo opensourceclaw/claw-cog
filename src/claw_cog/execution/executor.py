@@ -64,8 +64,7 @@ class ActionExecutor:
         """Get handler for an action type. Returns None if not registered."""
         return self._handlers.get(action_type)
 
-    def execute(self, action: Action,
-                context: Optional[ExecutionContext] = None) -> ActionResult:
+    def execute(self, action: Action, context: Optional[ExecutionContext] = None) -> ActionResult:
         """Execute a single action.
 
         Finds the appropriate handler, executes with context,
@@ -104,8 +103,9 @@ class ActionExecutor:
         ctx.complete_action(action.action_id, result.success, result.error or "")
         return result
 
-    def execute_batch(self, actions: List[Action],
-                      context: Optional[ExecutionContext] = None) -> List[ActionResult]:
+    def execute_batch(
+        self, actions: List[Action], context: Optional[ExecutionContext] = None
+    ) -> List[ActionResult]:
         """Execute multiple actions sequentially.
 
         On failure, attempts rollback for previously executed actions

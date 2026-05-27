@@ -105,9 +105,7 @@ class AuditLogger:
         while len(self._records) > self.max_records:
             self._records.pop(0)
 
-        logger.debug(
-            f"Audit[{record.record_id}] {component}: {operation} → {decision}"
-        )
+        logger.debug(f"Audit[{record.record_id}] {component}: {operation} → {decision}")
         return record.record_id
 
     def query(

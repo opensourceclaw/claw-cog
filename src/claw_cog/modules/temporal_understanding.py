@@ -16,8 +16,10 @@ from collections import defaultdict
 
 # ── Data Types ─────────────────────────────────────────────────────────────────
 
+
 class PatternType(Enum):
     """Types of temporal patterns."""
+
     DAILY = "daily"
     WEEKLY = "weekly"
     MONTHLY = "monthly"
@@ -28,11 +30,12 @@ class PatternType(Enum):
 @dataclass
 class TemporalPattern:
     """A recognized temporal pattern."""
+
     pattern_type: PatternType
     description: str
-    frequency: float           # Occurrences per time unit
-    confidence: float          # 0.0-1.0
-    event_count: int = 0       # Number of observations
+    frequency: float  # Occurrences per time unit
+    confidence: float  # 0.0-1.0
+    event_count: int = 0  # Number of observations
     first_seen: Optional[datetime] = None
     last_seen: Optional[datetime] = None
     typical_duration: float = 0.0  # Typical duration in seconds
@@ -55,10 +58,11 @@ class TemporalPattern:
 @dataclass
 class ScheduleEntry:
     """A single schedule entry."""
+
     pattern: TemporalPattern
-    suggested_time: str        # e.g., "09:00", "Monday 10:00"
-    flexibility: float         # 0.0-1.0 (1 = very flexible)
-    priority: int = 3          # 1-5, higher = more important
+    suggested_time: str  # e.g., "09:00", "Monday 10:00"
+    flexibility: float  # 0.0-1.0 (1 = very flexible)
+    priority: int = 3  # 1-5, higher = more important
 
     def to_dict(self) -> dict:
         return {
@@ -72,9 +76,10 @@ class ScheduleEntry:
 @dataclass
 class DeadlineInfo:
     """Information about a deadline."""
+
     description: str
     due_date: Optional[datetime] = None
-    urgency: float = 0.5       # 0.0-1.0
+    urgency: float = 0.5  # 0.0-1.0
     tasks_remaining: int = 0
     estimated_time_needed: float = 0.0  # seconds
 
@@ -100,6 +105,7 @@ class DeadlineInfo:
 
 # ── TemporalUnderstanding ──────────────────────────────────────────────────────
 
+
 class TemporalUnderstanding:
     """C1: Temporal pattern understanding and schedule inference.
 
@@ -118,9 +124,7 @@ class TemporalUnderstanding:
         self._deadlines: List[DeadlineInfo] = []
         self._stats = {"patterns_recognized": 0, "schedules_inferred": 0}
 
-    def recognize_patterns(
-        self, events: List['TemporalEvent']
-    ) -> List[TemporalPattern]:
+    def recognize_patterns(self, events: List["TemporalEvent"]) -> List[TemporalPattern]:
         """Recognize temporal patterns from events.
 
         Analyzes recurring events to detect daily, weekly, monthly,
@@ -158,9 +162,10 @@ class TemporalUnderstanding:
                 event_count=len(event_group),
                 first_seen=event_group[0].start_time if event_group else None,
                 last_seen=event_group[-1].start_time if event_group else None,
-                typical_duration=sum(
-                    e.duration_seconds or 0 for e in event_group
-                ) / len(event_group) if event_group else 0,
+                typical_duration=sum(e.duration_seconds or 0 for e in event_group)
+                / len(event_group)
+                if event_group
+                else 0,
             )
 
             patterns.append(pattern)
@@ -169,9 +174,7 @@ class TemporalUnderstanding:
         self._stats["patterns_recognized"] += len(patterns)
         return patterns
 
-    def infer_schedule(
-        self, patterns: List[TemporalPattern]
-    ) -> List[ScheduleEntry]:
+    def infer_schedule(self, patterns: List[TemporalPattern]) -> List[ScheduleEntry]:
         """Infer optimal schedule from recognized patterns.
 
         Args:
@@ -214,8 +217,13 @@ class TemporalUnderstanding:
         self._stats["schedules_inferred"] += 1
         return entries
 
-    def track_deadline(self, description: str, due_date: Optional[datetime] = None,
-                        tasks_remaining: int = 0, estimated_time: float = 0.0):
+    def track_deadline(
+        self,
+        description: str,
+        due_date: Optional[datetime] = None,
+        tasks_remaining: int = 0,
+        estimated_time: float = 0.0,
+    ):
         """Track a deadline with urgency awareness.
 
         Args:
@@ -226,13 +234,15 @@ class TemporalUnderstanding:
         """
         urgency = self._compute_urgency(due_date, estimated_time)
 
-        self._deadlines.append(DeadlineInfo(
-            description=description,
-            due_date=due_date,
-            urgency=urgency,
-            tasks_remaining=tasks_remaining,
-            estimated_time_needed=estimated_time,
-        ))
+        self._deadlines.append(
+            DeadlineInfo(
+                description=description,
+                due_date=due_date,
+                urgency=urgency,
+                tasks_remaining=tasks_remaining,
+                estimated_time_needed=estimated_time,
+            )
+        )
 
     def get_deadlines(self) -> List[DeadlineInfo]:
         """Get all tracked deadlines sorted by urgency."""
@@ -290,9 +300,7 @@ class TemporalUnderstanding:
         return flex_map.get(pattern.pattern_type, 0.5)
 
     @staticmethod
-    def _compute_urgency(
-        due_date: Optional[datetime], estimated_time: float
-    ) -> float:
+    def _compute_urgency(due_date: Optional[datetime], estimated_time: float) -> float:
         """Compute deadline urgency (0.0-1.0)."""
         if not due_date:
             return 0.5
@@ -312,9 +320,9 @@ class TemporalUnderstanding:
 
 
 __all__ = [
-    'TemporalUnderstanding',
-    'TemporalPattern',
-    'ScheduleEntry',
-    'DeadlineInfo',
-    'PatternType',
+    "TemporalUnderstanding",
+    "TemporalPattern",
+    "ScheduleEntry",
+    "DeadlineInfo",
+    "PatternType",
 ]

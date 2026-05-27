@@ -36,14 +36,17 @@ class LearningActionHandler(ActionHandler):
         handler = method_map.get(action.action_type)
         if handler is None:
             return ActionResult.failure_result(
-                action.action_id, f"Unsupported learning action: {action.action_type}",
+                action.action_id,
+                f"Unsupported learning action: {action.action_type}",
             )
 
         try:
             start = datetime.now()
             output = handler(action, context)
             duration = (datetime.now() - start).total_seconds() * 1000
-            return ActionResult.success_result(action.action_id, output=output, duration_ms=duration)
+            return ActionResult.success_result(
+                action.action_id, output=output, duration_ms=duration
+            )
         except Exception as e:
             return ActionResult.failure_result(action.action_id, error=str(e))
 

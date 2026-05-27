@@ -106,13 +106,9 @@ class PermissionController:
             self._matrix[role] = {}
         self._matrix[role][risk_level] = decision
 
-    def get_role_permission(
-        self, role: Role, risk_level: RiskLevel
-    ) -> PermissionDecision:
+    def get_role_permission(self, role: Role, risk_level: RiskLevel) -> PermissionDecision:
         """Get the current permission for a role at a risk level."""
-        return self._matrix.get(role, {}).get(
-            risk_level, PermissionDecision.DENY
-        )
+        return self._matrix.get(role, {}).get(risk_level, PermissionDecision.DENY)
 
     def classify_risk(self, operation: str) -> RiskLevel:
         """Classify the risk level of an operation.
@@ -146,7 +142,9 @@ class PermissionController:
         return RiskLevel.LOW
 
     def check(
-        self, operation: str, role: Role = Role.ASSISTANT,
+        self,
+        operation: str,
+        role: Role = Role.ASSISTANT,
         context: Optional[Dict] = None,
     ) -> PermissionResult:
         """Check if an operation is permitted.

@@ -44,14 +44,17 @@ class MemoryActionHandler(ActionHandler):
         handler = method_map.get(action.action_type)
         if handler is None:
             return ActionResult.failure_result(
-                action.action_id, f"Unsupported memory action: {action.action_type}",
+                action.action_id,
+                f"Unsupported memory action: {action.action_type}",
             )
 
         try:
             start = datetime.now()
             output = handler(action, context)
             duration = (datetime.now() - start).total_seconds() * 1000
-            result = ActionResult.success_result(action.action_id, output=output, duration_ms=duration)
+            result = ActionResult.success_result(
+                action.action_id, output=output, duration_ms=duration
+            )
             # Attach rollback data for store operations
             if action.action_type in ("memory", "store_memory") and "previous" in output:
                 result.rollback_data = {"previous": output["previous"]}

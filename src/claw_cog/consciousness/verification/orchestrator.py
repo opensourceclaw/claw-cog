@@ -68,7 +68,9 @@ class VerificationReport:
             "consistency": {
                 "is_consistent": self.consistency.is_consistent if self.consistency else None,
                 "deviation_score": self.consistency.deviation_score if self.consistency else None,
-                "contradiction_count": len(self.consistency.contradictions) if self.consistency else 0,
+                "contradiction_count": len(self.consistency.contradictions)
+                if self.consistency
+                else 0,
             },
         }
 
@@ -146,8 +148,7 @@ class VerificationOrchestrator:
         calib_outcomes = [context.get("expected_outcome", 1)] if confidence is not None else []
         report.calibration = self.calibrator.calibrate(calib_confidences, calib_outcomes)
         logger.debug(
-            f"Calibration: ece={report.calibration.ece:.4f}, "
-            f"brier={report.calibration.brier:.4f}"
+            f"Calibration: ece={report.calibration.ece:.4f}, brier={report.calibration.brier:.4f}"
         )
 
         # 3. Assess quality
@@ -162,20 +163,18 @@ class VerificationOrchestrator:
         )
 
         # Determine overall pass/fail
-        validation_failed = (
-            report.validation.status == ValidationStatus.FAIL
-        )
+        validation_failed = report.validation.status == ValidationStatus.FAIL
         calibration_failed = not report.calibration.is_calibrated
-        quality_failed = report.quality.overall_score in (
-            QualityScore.POOR, QualityScore.FAIR
-        )
+        quality_failed = report.quality.overall_score in (QualityScore.POOR, QualityScore.FAIR)
         consistency_failed = not report.consistency.is_consistent
 
-        report.passed = not any([
-            validation_failed,
-            calibration_failed,
-            consistency_failed,
-        ])
+        report.passed = not any(
+            [
+                validation_failed,
+                calibration_failed,
+                consistency_failed,
+            ]
+        )
 
         # Build summary
         parts = []
