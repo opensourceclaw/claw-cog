@@ -85,7 +85,7 @@ class ConsistencyChecker:
             deviation_score=deviation_score,
         )
 
-    def _to_text(self, value: Any) -> str:
+    def _to_text(self, value: Any) -> Any:
         """Convert a value to text for comparison."""
         if value is None:
             return ""

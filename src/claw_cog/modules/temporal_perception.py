@@ -227,7 +227,7 @@ class TemporalPerception:
         sequences = []
 
         if timed_events:
-            timed_events.sort(key=lambda e: e.start_time)
+            timed_events.sort(key=lambda e: e.start_time or datetime.min)
             sequences.append(timed_events)
 
         if untimed_events:

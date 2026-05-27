@@ -393,7 +393,10 @@ class ClawMemBridge:
 
     def get_temporal_stats(self) -> Dict:
         """Get temporal statistics for stored memories."""
-        stats = {"total_memories": 0, "with_timestamps": 0, "oldest_ts": None, "newest_ts": None}
+        stats: Dict[str, Any] = {
+            "total_memories": 0, "with_timestamps": 0,
+            "oldest_ts": None, "newest_ts": None,
+        }
 
         if HAS_CLAW_MEM:
             stats["backend"] = "claw-mem"
@@ -402,11 +405,11 @@ class ClawMemBridge:
             stats["backend"] = "fallback"
             for entries in self._memory_fallback.values():
                 for entry in entries:
-                    stats["total_memories"] += 1
+                    stats["total_memories"] += 1  # type: ignore[operator]
                     ts = entry.get("metadata", {}).get("timestamp")
                     if ts:
                         stats["with_timestamps"] += 1
-                        if stats["oldest_ts"] is None or ts < stats["oldest_ts"]:
+                        if stats["oldest_ts"] is None or ts < stats["oldest_ts"]:  # type: ignore[operator]
                             stats["oldest_ts"] = ts
                         if stats["newest_ts"] is None or ts > stats["newest_ts"]:
                             stats["newest_ts"] = ts
@@ -417,7 +420,7 @@ class ClawMemBridge:
         """Check if claw-mem is available."""
         return HAS_CLAW_MEM
 
-    def get_stats(self) -> Dict[str, int]:
+    def get_stats(self) -> Dict[str, Any]:
         """Get memory statistics."""
         if HAS_CLAW_MEM:
             # Get from claw-mem
