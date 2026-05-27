@@ -1,6 +1,6 @@
 """Calibration metrics for confidence evaluation."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, List
 
 

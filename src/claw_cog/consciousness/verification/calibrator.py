@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List
 import logging
 
 from claw_cog.consciousness.verification.metrics.calibration import (

@@ -1,6 +1,6 @@
 """Verification orchestrator — coordinates validation, calibration, quality, and consistency."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 import logging
 

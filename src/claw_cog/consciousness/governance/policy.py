@@ -2,12 +2,12 @@
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 import logging
 
 from .boundary import SafetyBoundary, BoundaryDecision
 from .permission import (
-    PermissionController, PermissionDecision, Role, RiskLevel,
+    PermissionController, PermissionDecision, Role,
 )
 from .audit import AuditLogger
 from .guardrails.input_filter import InputFilter
