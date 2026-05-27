@@ -1,7 +1,7 @@
 """Configuration defaults for claw-cog."""
 
 from dataclasses import dataclass
-from typing import Dict
+from typing import Any, Dict
 
 from claw_cog.exceptions import ConfigurationError
 

@@ -1,5 +1,6 @@
 """Predictive Processing Module — prediction, error, update for claw-cog v1.5.0.
-"""DEPRECATED: This module has zero external references and will be removed in v5.0."""
+
+DEPRECATED: This module has zero external references and will be removed in v5.0.
 
 Based on the Bayesian brain hypothesis: the agent maintains an internal model,
 generates predictions, computes prediction errors, and updates the model.

@@ -1,5 +1,7 @@
 """Time Consciousness Module (ITCMA) — Retention/Impression/Protention for claw-cog v1.5.0.
-"""DEPRECATED: This module has zero external references and will be removed in v5.0. Use modules/temporal_*.py instead."""
+
+DEPRECATED: This module has zero external references and will be removed in v5.0.
+Use modules/temporal_*.py instead.
 
 Based on Husserl's phenomenology: retention (past holding), impression (present),
 protention (future anticipation). Implements the ITCMA (Internal Time Consciousness
