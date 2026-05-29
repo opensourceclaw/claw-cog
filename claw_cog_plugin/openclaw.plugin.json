@@ -1,0 +1,56 @@
+{
+  "id": "claw-cog",
+  "name": "ClawCog Consciousness Layer",
+  "description": "GNWT-based consciousness layer for AI agents with meta-d' monitoring and temporal awareness",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "pythonPath": {
+        "type": "string",
+        "description": "Python executable path (default: python3)"
+      },
+      "bridgePath": {
+        "type": "string",
+        "description": "Bridge module path (default: -m claw_cog.bridge)"
+      },
+      "workspaceDir": {
+        "type": "string",
+        "description": "Workspace directory (default: OpenClaw workspace)"
+      },
+      "autoInject": {
+        "type": "boolean",
+        "description": "Auto-inject consciousness context at session start (default: true)"
+      },
+      "gnwtEnabled": {
+        "type": "boolean",
+        "description": "Enable GNWT consciousness processing (default: true)"
+      },
+      "metaDEnabled": {
+        "type": "boolean",
+        "description": "Enable meta-d' metacognitive monitoring (default: true)"
+      },
+      "temporalEnabled": {
+        "type": "boolean",
+        "description": "Enable temporal consciousness (P1: TemporalPerception, Understanding, Prediction) (default: true)"
+      },
+      "topK": {
+        "type": "integer",
+        "description": "Top K consciousness states to inject (default: 5)"
+      },
+      "confidenceThreshold": {
+        "type": "number",
+        "description": "Minimum confidence to trigger metacognitive adjustment (default: 0.7)"
+      }
+    }
+  },
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "claw_cog_status",
+      "claw_cog_analyze",
+      "claw_cog_inject"
+    ]
+  }
+}
