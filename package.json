@@ -1,0 +1,12 @@
+{
+  "name": "claw-cog",
+  "version": "5.0.0",
+  "description": "GNWT-based Consciousness Layer for AI agents (TypeScript)",
+  "main": "dist/index.js",
+  "scripts": { "build": "tsc", "test": "vitest run" },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^4.1.6"
+  }
+}
