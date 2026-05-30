@@ -1,0 +1,2 @@
+[console_scripts]
+claw-cog = claw_cog.cli:main

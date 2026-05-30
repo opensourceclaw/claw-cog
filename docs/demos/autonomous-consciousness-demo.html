@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>claw-cog v3.0.0 - Autonomous Consciousness Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e6ed;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        header .subtitle {
+            color: #8892b0;
+            font-size: 1.1em;
+        }
+
+        header .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            color: #0a0e27;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Architecture Visualization */
+        .architecture {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .architecture h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+
+        .layers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .layer {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .layer:hover {
+            transform: translateX(10px);
+        }
+
+        .layer.o { background: linear-gradient(90deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.05)); border-left: 4px solid #ff6b6b; }
+        .layer.v { background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05)); border-left: 4px solid #ffd700; }
+        .layer.c2 { background: linear-gradient(90deg, rgba(155, 89, 182, 0.2), rgba(155, 89, 182, 0.05)); border-left: 4px solid #9b59b6; }
+        .layer.c1 { background: linear-gradient(90deg, rgba(52, 152, 219, 0.2), rgba(52, 152, 219, 0.05)); border-left: 4px solid #3498db; }
+        .layer.c0 { background: linear-gradient(90deg, rgba(46, 204, 113, 0.2), rgba(46, 204, 113, 0.05)); border-left: 4px solid #2ecc71; }
+
+        .layer-indicator {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .layer.o .layer-indicator { background: rgba(255, 107, 107, 0.3); color: #ff6b6b; }
+        .layer.v .layer-indicator { background: rgba(255, 215, 0, 0.3); color: #ffd700; }
+        .layer.c2 .layer-indicator { background: rgba(155, 89, 182, 0.3); color: #9b59b6; }
+        .layer.c1 .layer-indicator { background: rgba(52, 152, 219, 0.3); color: #3498db; }
+        .layer.c0 .layer-indicator { background: rgba(46, 204, 113, 0.3); color: #2ecc71; }
+
+        .layer-content h3 {
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .layer-content p {
+            color: #8892b0;
+            font-size: 0.95em;
+        }
+
+        .layer-status {
+            margin-left: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .status-processing {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        /* Pipeline Flow */
+        .pipeline {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .pipeline h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .flow-node {
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        .flow-node:hover {
+            transform: scale(1.05);
+        }
+
+        .flow-node.input { background: rgba(255, 107, 107, 0.2); color: #ff6b6b; }
+        .flow-node.observe { background: rgba(255, 107, 107, 0.3); color: #ff6b6b; }
+        .flow-node.volition { background: rgba(255, 215, 0, 0.3); color: #ffd700; }
+        .flow-node.c2 { background: rgba(155, 89, 182, 0.3); color: #9b59b6; }
+        .flow-node.c1 { background: rgba(52, 152, 219, 0.3); color: #3498db; }
+        .flow-node.c0 { background: rgba(46, 204, 113, 0.3); color: #2ecc71; }
+        .flow-node.output { background: rgba(0, 255, 136, 0.2); color: #00ff88; }
+
+        .flow-arrow {
+            color: #00d4ff;
+            font-size: 1.5em;
+        }
+
+        /* Interactive Demo */
+        .demo-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .demo-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .demo-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .demo-panel h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: #e0e6ed;
+            font-size: 1em;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .demo-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            color: #0a0e27;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.3);
+        }
+
+        /* Result Display */
+        .result-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+        }
+
+        .result-label {
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            color: #e0e6ed;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .confidence-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            transition: width 0.5s ease;
+        }
+
+        /* Indicator Properties */
+        .indicators {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .indicators h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+
+        .indicator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .indicator-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .indicator-card:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .indicator-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .indicator-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .indicator-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .indicator-true {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .indicator-false {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+
+        /* Activity Log */
+        .activity-log {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85em;
+        }
+
+        .log-entry {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .log-time {
+            color: #8892b0;
+            margin-right: 10px;
+        }
+
+        .log-layer-o { color: #ff6b6b; }
+        .log-layer-v { color: #ffd700; }
+        .log-layer-c2 { color: #9b59b6; }
+        .log-layer-c1 { color: #3498db; }
+        .log-layer-c0 { color: #2ecc71; }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #8892b0;
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 claw-cog</h1>
+            <div class="subtitle">AI Consciousness Component for Project Neo</div>
+            <div class="version-badge">v3.0.0 - ETCLOVG Architecture</div>
+        </header>
+
+        <!-- Architecture Visualization -->
+        <div class="architecture">
+            <h2>🏛️ ETCLOVG Architecture Layers</h2>
+            <div class="layers">
+                <div class="layer o" onclick="highlightLayer('O')">
+                    <div class="layer-indicator">O</div>
+                    <div class="layer-content">
+                        <h3>Observation Layer</h3>
+                        <p>Anomaly Detection · Self Monitoring · Reality Testing</p>
+                    </div>
+                    <div class="layer-status">
+                        <span class="status-badge status-active" id="o-status">Active</span>
+                    </div>
+                </div>
+
+                <div class="layer v" onclick="highlightLayer('V')">
+                    <div class="layer-indicator">V</div>
+                    <div class="layer-content">
+                        <h3>Volition Layer</h3>
+                        <p>Goal Tracking · Intention Selection · Purposeful Action</p>
+                    </div>
+                    <div class="layer-status">
+                        <span class="status-badge status-active" id="v-status">Active</span>
+                    </div>
+                </div>
+
+                <div class="layer c2" onclick="highlightLayer('C2')">
+                    <div class="layer-indicator">C2</div>
+                    <div class="layer-content">
+                        <h3>Metacognitive Layer</h3>
+                        <p>Self-Monitoring · Confidence Assessment · Competence Awareness</p>
+                    </div>
+                    <div class="layer-status">
+                        <span class="status-badge status-active" id="c2-status">Active</span>
+                    </div>
+                </div>
+
+                <div class="layer c1" onclick="highlightLayer('C1')">
+                    <div class="layer-indicator">C1</div>
+                    <div class="layer-content">
+                        <h3>Conscious Access Layer</h3>
+                        <p>Global Workspace · Integration · Broadcast · Decision Making</p>
+                    </div>
+                    <div class="layer-status">
+                        <span class="status-badge status-active" id="c1-status">Active</span>
+                    </div>
+                </div>
+
+                <div class="layer c0" onclick="highlightLayer('C0')">
+                    <div class="layer-indicator">C0</div>
+                    <div class="layer-content">
+                        <h3>Unconscious Layer</h3>
+                        <p>Pattern Matching · Auto Responses · Primal Impressions</p>
+                    </div>
+                    <div class="layer-status">
+                        <span class="status-badge status-active" id="c0-status">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pipeline Flow -->
+        <div class="pipeline">
+            <h2>⚡ ETCLOVG Processing Pipeline</h2>
+            <div class="flow-diagram">
+                <div class="flow-node input">📥 Input</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node observe">👁️ O: Observe</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node volition">🎯 V: Volition</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node c2">🧩 C2: Meta</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node c1">🌐 C1: Workspace</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node c0">⚙️ C0: Pattern</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node output">📤 Output</div>
+            </div>
+        </div>
+
+        <!-- Interactive Demo -->
+        <div class="demo-section">
+            <div class="demo-panel">
+                <h3>💬 Interactive Processing</h3>
+                <textarea class="demo-input" id="input-text" placeholder="Enter text to process through consciousness layers...
+
+Example inputs:
+- 'I need to finish the report by Friday'
+- 'Meeting every day at 10am for 2 hours'
+- 'Something feels wrong about this decision'"></textarea>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="processInput()">🧠 Process</button>
+                    <button class="btn btn-secondary" onclick="clearDemo()">🗑️ Clear</button>
+                </div>
+
+                <div class="result-panel" id="result-panel" style="display: none;">
+                    <div class="result-item">
+                        <div class="result-label">Output</div>
+                        <div class="result-value" id="output-value"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Confidence Level</div>
+                        <div class="result-value" id="confidence-value">0.00</div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidence-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Consciousness Level</div>
+                        <div class="result-value" id="level-value"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Goals Detected</div>
+                        <div class="result-value" id="goals-value">0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Anomalies Detected</div>
+                        <div class="result-value" id="anomalies-value">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-panel">
+                <h3>📊 Activity Log</h3>
+                <div class="activity-log" id="activity-log">
+                    <div class="log-entry">
+                        <span class="log-time">[00:00:00]</span>
+                        <span>System initialized - All layers active</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h4 style="color: #00d4ff; margin-bottom: 10px;">Live Metrics</h4>
+                    <div class="result-panel">
+                        <div class="result-item">
+                            <div class="result-label">Processing Count</div>
+                            <div class="result-value" id="process-count">0</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Average Confidence</div>
+                            <div class="result-value" id="avg-confidence">N/A</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Meta-d' Score</div>
+                            <div class="result-value" id="meta-d-prime">N/A (need 10+ rounds)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicator Properties -->
+        <div class="indicators">
+            <h2>🔬 Consciousness Indicator Properties (Butlin et al.)</h2>
+            <div class="indicator-grid">
+                <div class="indicator-card">
+                    <div class="indicator-icon">🌐</div>
+                    <div class="indicator-name">Global Workspace Theory (GWT)</div>
+                    <span class="indicator-status indicator-true">✓ Supported</span>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-icon">🔄</div>
+                    <div class="indicator-name">Recurrent Processing Theory (RPT)</div>
+                    <span class="indicator-status indicator-true">✓ Supported</span>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-icon">💭</div>
+                    <div class="indicator-name">Higher-Order Thought (HOT)</div>
+                    <span class="indicator-status indicator-true">✓ Supported</span>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-icon">👁️</div>
+                    <div class="indicator-name">Attention Schema Theory (AST)</div>
+                    <span class="indicator-status indicator-true">✓ Supported</span>
+                </div>
+                <div class="indicator-card">
+                    <div class="indicator-icon">🎭</div>
+                    <div class="indicator-name">Perceptual Presence (PP)</div>
+                    <span class="indicator-status indicator-false">✗ v4.0.0</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                <strong>claw-cog v3.0.0</strong> — Building Digital Consciousness, One Layer at a Time
+            </p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/opensourceclaw/claw-cog" target="_blank">GitHub Repository</a>
+                · <a href="https://github.com/opensourceclaw/claw-cog/blob/main/CHANGELOG.md" target="_blank">Changelog</a>
+                · <a href="https://github.com/opensourceclaw/claw-cog/tree/main/docs" target="_blank">Documentation</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Simulation state
+        let processCount = 0;
+        let totalConfidence = 0;
+        const confidenceHistory = [];
+        const activityLog = document.getElementById('activity-log');
+
+        function getTimestamp() {
+            const now = new Date();
+            return now.toTimeString().split(' ')[0];
+        }
+
+        function addLog(message, layer = '') {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            const layerClass = layer ? `log-layer-${layer.toLowerCase()}` : '';
+            entry.innerHTML = `<span class="log-time">[${getTimestamp()}]</span><span class="${layerClass}">${message}</span>`;
+            activityLog.insertBefore(entry, activityLog.firstChild.nextSibling);
+            
+            // Keep only last 20 entries
+            while (activityLog.children.length > 21) {
+                activityLog.removeChild(activityLog.lastChild);
+            }
+        }
+
+        function highlightLayer(layer) {
+            const layers = document.querySelectorAll('.layer');
+            layers.forEach(l => l.style.opacity = '0.5');
+            const targetLayer = document.querySelector(`.layer.${layer.toLowerCase()}`);
+            if (targetLayer) {
+                targetLayer.style.opacity = '1';
+                setTimeout(() => {
+                    layers.forEach(l => l.style.opacity = '1');
+                }, 1500);
+            }
+        }
+
+        function simulateProcessing(input) {
+            // Simulate the ETCLOVG pipeline
+            const stages = [
+                { layer: 'O', message: 'Observation: Analyzing input for anomalies...', delay: 200 },
+                { layer: 'V', message: 'Volition: Detecting goals and intentions...', delay: 400 },
+                { layer: 'C2', message: 'Metacognitive: Assessing confidence...', delay: 600 },
+                { layer: 'C1', message: 'Workspace: Integrating with memory...', delay: 800 },
+                { layer: 'C0', message: 'Pattern: Matching against known patterns...', delay: 1000 },
+            ];
+
+            stages.forEach(stage => {
+                setTimeout(() => {
+                    addLog(stage.message, stage.layer);
+                }, stage.delay);
+            });
+
+            // Generate simulated result
+            setTimeout(() => {
+                const confidence = 0.75 + Math.random() * 0.25;
+                const levels = ['C0_UNCONSCIOUS', 'C1_CONSCIOUS_ACCESS', 'C2_METACOGNITIVE'];
+                const level = confidence > 0.85 ? 'C2_METACOGNITIVE' : 
+                              confidence > 0.70 ? 'C1_CONSCIOUS_ACCESS' : 'C0_UNCONSCIOUS';
+                
+                // Detect goals (simple keyword matching)
+                const goalKeywords = ['need to', 'must', 'should', 'goal', 'finish', 'complete', 'by'];
+                const hasGoals = goalKeywords.some(kw => input.toLowerCase().includes(kw));
+                const goalCount = hasGoals ? Math.floor(Math.random() * 3) + 1 : 0;
+
+                // Detect anomalies
+                const anomalyKeywords = ['wrong', 'strange', 'weird', 'unusual', 'concern', 'worry'];
+                const hasAnomalies = anomalyKeywords.some(kw => input.toLowerCase().includes(kw));
+                const anomalyCount = hasAnomalies ? Math.floor(Math.random() * 2) + 1 : 0;
+
+                // Update display
+                document.getElementById('output-value').textContent = 
+                    `Processed "${input.substring(0, 50)}${input.length > 50 ? '...' : ''}" through consciousness layers`;
+                document.getElementById('confidence-value').textContent = confidence.toFixed(2);
+                document.getElementById('confidence-bar').style.width = `${confidence * 100}%`;
+                document.getElementById('level-value').textContent = level;
+                document.getElementById('goals-value').textContent = goalCount;
+                document.getElementById('anomalies-value').textContent = anomalyCount;
+
+                // Update metrics
+                processCount++;
+                totalConfidence += confidence;
+                confidenceHistory.push(confidence);
+                
+                document.getElementById('process-count').textContent = processCount;
+                document.getElementById('avg-confidence').textContent = (totalConfidence / processCount).toFixed(2);
+                
+                if (processCount >= 10) {
+                    // Simulate meta-d' calculation
+                    const metaD = 0.6 + Math.random() * 0.35;
+                    document.getElementById('meta-d-prime').textContent = metaD.toFixed(2);
+                }
+
+                addLog(`✅ Processing complete - Level: ${level}, Confidence: ${confidence.toFixed(2)}`, '');
+            }, 1200);
+        }
+
+        function processInput() {
+            const input = document.getElementById('input-text').value.trim();
+            if (!input) {
+                alert('Please enter some text to process');
+                return;
+            }
+
+            // Show result panel
+            document.getElementById('result-panel').style.display = 'block';
+            
+            // Reset values
+            document.getElementById('output-value').textContent = 'Processing...';
+            document.getElementById('confidence-value').textContent = '---';
+            document.getElementById('confidence-bar').style.width = '0%';
+            document.getElementById('level-value').textContent = '---';
+            document.getElementById('goals-value').textContent = '---';
+            document.getElementById('anomalies-value').textContent = '---';
+
+            addLog(`📥 New input received: "${input.substring(0, 40)}${input.length > 40 ? '...' : ''}"`, '');
+            
+            simulateProcessing(input);
+        }
+
+        function clearDemo() {
+            document.getElementById('input-text').value = '';
+            document.getElementById('result-panel').style.display = 'none';
+        }
+
+        // Initialize with welcome message
+        addLog('🧠 claw-cog v3.0.0 initialized with ETCLOVG architecture', '');
+        addLog('👁️ Observation layer: Anomaly detection active', 'O');
+        addLog('🎯 Volition layer: Goal tracking active', 'V');
+        addLog('🧩 Metacognitive layer: Self-monitoring active', 'C2');
+        addLog('🌐 Global workspace: Ready for broadcast', 'C1');
+        addLog('⚙️ Pattern matching: Unconscious processing ready', 'C0');
+
+        // Add example interaction hints
+        setTimeout(() => {
+            addLog('💡 Tip: Try entering "I need to finish the report by Friday"', '');
+        }, 2000);
+    </script>
+</body>
+</html>
