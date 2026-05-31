@@ -5,7 +5,7 @@
  * Uses the official OpenClaw plugin register(api) pattern for protocol compatibility.
  */
 
-import { ClawCogBridge } from "./bridge";
+import { TsBridge, type ClawCogConfig } from "./bridge";
 
 // ── Plugin Definition ─────────────────────────────────────────────────────────
 
@@ -14,13 +14,13 @@ const plugin = {
   name: "ClawCog Consciousness Layer",
   description:
     "GNWT-based consciousness layer for AI agents with meta-d' monitoring and temporal awareness",
-  version: "1.0.0",
+  version: "5.0.0",
 
   register(api: any) {
     const config = api.pluginConfig || {};
 
     // ── Bridge Service ────────────────────────────────────────────────────────
-    const bridge = new ClawCogBridge(config);
+    const bridge = new TsBridge(config);
 
     api.registerService({
       id: "claw-cog",
@@ -63,7 +63,7 @@ const plugin = {
 
         if (ctx?.sessionKey) {
           api.logger?.info?.(
-            `[claw-cog] Session ${ctx.sessionKey}: meta-d'=${report.meta_d_prime?.toFixed(3)}, confidence=${state.confidence?.toFixed(2)}`
+            `[claw-cog] Session ${ctx.sessionKey}: meta-d'=${report.metaDPrime?.toFixed(3)}, confidence=${state.confidenceThreshold?.toFixed(2)}`
           );
         }
       } catch (err) {
